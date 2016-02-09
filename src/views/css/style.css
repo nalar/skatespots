@@ -1,0 +1,5 @@
+html, body { height: 100%; margin: 0; padding: 0; }
+
+#map { height: 100%; width: 60%; display: inline-block;}
+
+#rightbar {height: 100%; width: 30%; display: inline-block; vertical-align: top; margin-left: 20px;}

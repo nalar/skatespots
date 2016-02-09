@@ -1,0 +1,75 @@
+doctype html
+html
+	head
+		link(rel='stylesheet' href='/css/style.css')
+		script(src='https://code.jquery.com/jquery-2.2.0.min.js')
+	body
+		#map
+			script.
+				$( document ).ready(function() {
+				console.log( "ready!" );
+				})
+
+			script(type='text/javascript').
+				var map;
+				
+				function initMap() {
+				
+				map = new google.maps.Map(document.getElementById('map'), {
+				center: {lat: 52.4, lng: 4.92},
+				zoom: 12
+				});
+				
+				var UserLocation;
+				var UserLocationArr = [0,0];
+				function placeMarker(location) {
+					if ( UserLocation ) {
+						UserLocation.setPosition(location);
+						UserLocationArr[0] = location.lng();
+						UserLocationArr[1] = location.lat();
+						$("#formlatlon").val(UserLocationArr)
+					} else {
+						UserLocation = new google.maps.Marker({
+							position: location,
+							map: map,
+							draggable: true
+						});
+						UserLocationArr[0] = location.lng();
+						UserLocationArr[1] = location.lat();
+						$("#formlatlon").val(UserLocationArr)
+
+						UserLocation.addListener('dragend', function(event) {
+							UserLocationArr[0] = UserLocation.getPosition().lng();
+							UserLocationArr[1] = UserLocation.getPosition().lat();
+							console.log(UserLocationArr);
+							$("#formlatlon").val(UserLocationArr)
+				});
+					}
+				}
+
+				map.addListener('click', function(event) {
+					placeMarker(event.latLng);
+				});
+				}
+
+			script(async defer src='https://maps.googleapis.com/maps/api/js?key=AIzaSyDmSbvLztiTx63qBwEO3JIzGZWWMmIYTh0&callback=initMap')
+		#rightbar
+			#header
+				h1 Welcome
+			#test
+			div(id="registerform")
+				h2 Register
+				form(name="addUser" action="/register" method="post")
+					input(type="text" id="formlatlon" name="latlon" value="latlon")
+					br
+					input(type="text" name="userName" placeholder="Username")
+					br
+					input(type="password" name="userPassword" placeholder="password")
+					br
+					input(type="text" name="userEmail" placeholder="Email")
+					br
+					input(type="text" name="userFirstName" placeholder="First Name")
+					br
+					input(type="text" name="userLastName" placeholder="Last Name")
+					br
+					button(type="submit" id="submitRegistration") Register

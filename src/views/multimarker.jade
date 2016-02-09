@@ -1,0 +1,38 @@
+doctype html
+html
+	head
+		link(rel='stylesheet' href='/css/style.css')
+		script(src='https://code.jquery.com/jquery-2.2.0.min.js')
+	body
+		#map
+			script.
+				$( document ).ready(function() {
+				console.log( "ready!" );
+				})
+
+			script(type='text/javascript').
+				var map;
+				
+				function initMap() {
+				
+				map = new google.maps.Map(document.getElementById('map'), {
+				center: {lat: 52.4, lng: 4.92},
+				zoom: 12
+				});
+
+				map.data.loadGeoJson('spots.json')
+
+				map.data.addListener('click', function(event) {
+					$('#spots').html("");
+					event.feature.forEachProperty(function(property){
+						$('#spots').append('<br>').append(property)
+					})
+				});
+				}
+
+			script(async defer src='https://maps.googleapis.com/maps/api/js?key=AIzaSyDmSbvLztiTx63qBwEO3JIzGZWWMmIYTh0&callback=initMap')
+		#rightbar
+			#header
+				h1 Welcome
+			#spots
+				

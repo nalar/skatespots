@@ -1,0 +1,16 @@
+{
+  "name": "skatespots",
+  "version": "0.0.1",
+  "description": "Skate spots directory with google maps integration",
+  "author": "Thijs Tel",
+  "dependencies": {
+    "body-parser": "^1.14.2",
+    "cookie-parser": "^1.4.1",
+    "express": "^4.13.4",
+    "express-session": "^1.13.0",
+    "gm": "^1.21.1",
+    "jade": "^1.11.0",
+    "pg": "^4.4.4",
+    "sequelize": "^3.19.0"
+  }
+}
