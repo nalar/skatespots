@@ -1,32 +1,30 @@
- {
+{
   "type": "FeatureCollection",
   "features": [{
     "type": "Feature",
     "properties": {
-      "name": "Spot name",
-      "type": "Spot type",
-      "photo": "path/to/photo",
-      "author": "AuthorUser ID",
-      "videolink": ["VideoURL", "VideoTime"]
+      "name": "Bruggetje",
+      "type": "Rail",
+      "description": "Easy up down rail",
+      "videolink": ["http://youtube.com/supergoodvideo", "12:44"],
+      "author": null
     },
     "geometry": {
       "type": "Point",
-      "coordinates": [
-        4.900116920471191, 52.37269098439498
-      ]
+      "coordinates": [4.92404222488403, 52.3645417861198]
     }
   }, {
     "type": "Feature",
     "properties": {
-      "name": "Spot name 2",
-      "type": "Spot type 2",
-      "photo": "path/to/secondphoto",
-      "author": "AuthorUser ID2",
-      "videolink": ["VideoURL2", "VideoTime2"]
+      "name": "UVA Rainbow",
+      "type": "Rail",
+      "description": "Simple rainbow rail",
+      "videolink": ["http://youtube.com/supergoodvideo", "1:04"],
+      "author": null
     },
     "geometry": {
       "type": "Point",
-      "coordinates": [4.902434349060059, 52.36726708725766]
+      "coordinates": [4.89815890789032, 52.3707979365388]
     }
   }]
 }

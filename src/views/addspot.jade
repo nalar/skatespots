@@ -1,0 +1,77 @@
+doctype html
+html
+	head
+		link(rel='stylesheet' href='/css/style.css')
+		script(src='https://code.jquery.com/jquery-2.2.0.min.js')
+	body
+		#map
+			script.
+				$( document ).ready(function() {
+				console.log( "ready!" );
+				})
+
+			script(type='text/javascript').
+				var map;
+				
+				function initMap() {
+				
+				map = new google.maps.Map(document.getElementById('map'), {
+				center: {lat: 52.4, lng: 4.92},
+				zoom: 12
+				});
+				
+				var SpotLocation;
+				var SpotLocationArr = [0,0];
+				function placeMarker(location) {
+					if ( SpotLocation ) {
+						SpotLocation.setPosition(location);
+						SpotLocationArr[0] = location.lng();
+						SpotLocationArr[1] = location.lat();
+						$("#formlatlon").val(SpotLocationArr)
+					} else {
+						SpotLocation = new google.maps.Marker({
+							position: location,
+							map: map,
+							draggable: true
+						});
+						SpotLocationArr[0] = location.lng();
+						SpotLocationArr[1] = location.lat();
+						$("#formlatlon").val(SpotLocationArr)
+
+						SpotLocation.addListener('dragend', function(event) {
+							SpotLocationArr[0] = SpotLocation.getPosition().lng();
+							SpotLocationArr[1] = SpotLocation.getPosition().lat();
+							console.log(SpotLocationArr);
+							$("#formlatlon").val(SpotLocationArr)
+				});
+					}
+				}
+
+				map.addListener('click', function(event) {
+					placeMarker(event.latLng);
+				});
+				}
+
+			script(async defer src='https://maps.googleapis.com/maps/api/js?key=AIzaSyDmSbvLztiTx63qBwEO3JIzGZWWMmIYTh0&callback=initMap')
+		#rightbar
+			#header
+				h1 Welcome
+			#test
+			div(id="registerform")
+				h2 Add a spot
+				form(name="addSpot" action="/addspot" method="post")
+					input(type="text" id="formlatlon" name="latlon" value="latlon")
+					br
+					input(type="text" name="spotName" placeholder="Name")
+					br
+					input(type="text" name="spotType" placeholder="Type")
+					br
+					input(type="text" name="spotDescription" placeholder="description")
+					br
+					input(type="text" name="spotPhoto" placeholder="Photo")
+					br
+					input(type="text" name="videoLink" placeholder="Video")
+					br
+					input(type="text" name="videoTime" placeholder="Time")
+					br
+					button(type="submit" id="submitSpot") Add Spot

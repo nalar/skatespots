@@ -57,19 +57,22 @@ html
 			#header
 				h1 Welcome
 			#test
-			div(id="registerform")
-				h2 Register
-				form(name="addUser" action="/register" method="post")
-					input(type="text" id="formlatlon" name="latlon" value="latlon")
+			div(id="editspotform")
+				h2 Edit spot
+				form(name="addSpot" action="/editspot" method="post")
+					input(type="hidden" name="spotID" value=spottoedit.id)
+					input(type="text" id="formlatlon" name="latlon" value=spottoedit.location)
 					br
-					input(type="text" name="userName" placeholder="Username")
+					input(type="text" name="spotName" value=spottoedit.name)
 					br
-					input(type="password" name="userPassword" placeholder="password")
+					input(type="text" name="spotType" value=spottoedit.type)
 					br
-					input(type="text" name="userEmail" placeholder="Email")
+					input(type="text" name="spotDescription" value=spottoedit.description)
 					br
-					input(type="text" name="userFirstName" placeholder="First Name")
+					input(type="text" name="spotPhoto" value=spottoedit.photo)
 					br
-					input(type="text" name="userLastName" placeholder="Last Name")
+					input(type="text" name="videoLink" value=spottoedit.videolink[0])
 					br
-					button(type="submit" id="submitRegistration") Register
+					input(type="text" name="videoTime" value=spottoedit.videolink[1])
+					br
+					button(type="submit" id="editSpot") Add Spot

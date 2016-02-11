@@ -10,7 +10,6 @@ var jade = require('jade');
 var pg = require('pg');
 var gm = require('gm');
 
-
 app = express();
 
 app.use(bodyParser.urlencoded({
@@ -48,17 +47,17 @@ var User = sequelize.define('user', {
 	firstname: Sequelize.TEXT,
 	lastname: Sequelize.TEXT,
 	location: {
-		type: Sequelize.ARRAY(Sequelize.TEXT),
+		type: Sequelize.ARRAY(Sequelize.FLOAT),
 		defaultValue: null
 	}
 });
 
 // Spots
-var Spot = sequelize.define('post', {
+var Spot = sequelize.define('spot', {
 	name: Sequelize.TEXT,
 	type: Sequelize.TEXT,
 	location: {
-		type: Sequelize.ARRAY(Sequelize.TEXT),
+		type: Sequelize.ARRAY(Sequelize.FLOAT),
 		defaultValue: null
 	},
 	photo: Sequelize.TEXT,
@@ -79,76 +78,80 @@ var Spot = sequelize.define('post', {
 // Get Routes
 //////////////////////////////////////////////////////////////////////
 // Landing page (anyone)			GET
-app.get('/:path/:id', function(request, response) {
+app.get('/', function(request, response) {
+	console.log(request.protocol + '://' + request.get('host') + request.originalUrl);
 	// Get current user info from userid stored in session
-	// Path can be spot or user
-	// id is the spotid or userid
-	var pathName = request.params.path;
-	var reqID = request.params.id;
-	// Render skatespots.jade with:
-	// - User info
-	// - Spotlist
-});
+	var feature = request.params.feature;
+	var featureID = request.params.id;
 
-app.get('/singlemarker', function(request, response) {
-	// Get current user info from userid stored in session
-
-	// Render skatespots.jade with:
-	// - User info
-	// - Spotlist
-	response.render('singlemarker')
-});
-
-app.get('/multimarker', function(request, response) {
-	// Get current user info from userid stored in session
-
-	// Render skatespots.jade with:
-	// - User info
-	// - Spotlist
-	response.render('multimarker')
-});
-
-app.get('/jsonquery', function(request, response) {
-	// Get current user info from userid stored in session
-	User.findById(1).then(function(userinfo) {
-		console.log(userinfo.dataValues)
-		response.render('jsonquery', {
-			userinfo: userinfo.dataValues
-		})
+	response.render('main', {
+		username: request.session.username,
+		userid: request.session.id
 	})
+});
 
+app.get('/adduser', function(request, response) {
+	// Get current user info from userid stored in session
+
+	response.render('adduser')
+});
+
+app.get('/addspot', function(request, response) {
+	// Get current user info from userid stored in session
+
+	response.render('addspot')
+});
+
+app.get('/skatespots.json', function(request, response) {
+	sequelize.query(
+		"SELECT row_to_json(fc) FROM (SELECT 'FeatureCollection' AS TYPE, array_to_json(array_agg(f)) AS features FROM (SELECT 'Feature' AS TYPE , row_to_json((SELECT l FROM (SELECT id, name, type, description, photo, videolink, author) AS l)) AS properties, row_to_json((SELECT l FROM (SELECT 'Point' AS TYPE, array_to_json(location::float[]) as coordinates) AS l)) AS geometry FROM spots AS lg) AS f) AS fc;", {
+			type: sequelize.QueryTypes.SELECT
+		}
+	).then(function(results) {
+		response.send(results[0].row_to_json)
+	})
 });
 
 //////////////////////////////////////////////////////////////////////
 // Get spot info (anyone)			GET
 app.get('/getspotinfo/:spotid', function(request, response) {
 	// Find spot by id in database
-
-	// Return the spot data to be used by jquery
+	Spot.findById(request.params.spotid).then(function(spotdata) {
+		// Return the spot data to be used by jquery
+		response.send(JSON.stringify(spotdata))
+	})
 });
 
 //////////////////////////////////////////////////////////////////////
 // Get user info (anyone)			GET
 app.get('/getuserinfo/:infoid', function(request, response) {
 	// Find user by id in database
-
-	// Return the user data to be used by jquery
+	User.findById(request.params.infoid).then(function(userdata) {
+		// Return the user data to be used by jquery
+		response.send(userdata)
+	})
 });
 
 //////////////////////////////////////////////////////////////////////
-// Spot Management (admin)			GET
-app.get('/managespots', function(request, response) {
-	// Get the full spot list
-
-	// Render the managespots page with the spot list array/object
+// Spot Edit 				GET
+app.get('/editspot/:id', function(request, response) {
+	Spot.findById(request.params.id).then(function(spottoedit) {
+		response.render('editspot', {
+			spottoedit: spottoedit,
+			user: request.session.username
+		})
+	})
 });
 
 //////////////////////////////////////////////////////////////////////
-// User Management (admin)			GET
-app.get('/manageusers', function(request, response) {
-	// Get the full user list
-
-	// Render the manageusers page with the user list array/object
+// User Edit 						GET
+app.get('/edituser/:id', function(request, response) {
+	User.findById(request.params.id).then(function(usertoedit) {
+		response.render('edituser', {
+			usertoedit: usertoedit,
+			user: request.session.username
+		})
+	})
 });
 
 //////////////////////////////////////////////////////////////////////
@@ -175,35 +178,68 @@ app.post('/register', function(request, response) {
 	}).then(function(newuser) {
 		request.session.userid = newuser.dataValues.id;
 		request.session.username = newuser.dataValues.name;
-		response.redirect('/singlemarker');
+		response.redirect('/');
 	})
-
 });
 
 //////////////////////////////////////////////////////////////////////
 // Log in 		(not logged in)		POST
 app.post('/login', function(request, response) {
-	// Get values from the post
+	User.findAll({
+		where: {
+			username: request.body.username
+		}
+	}).then(function(userData) {
+		if (userData[0].password === request.body.userpass) {
+			request.session.userid = userData[0].id;
+			request.session.username = userData[0].username;
+			console.log('Succesfully logged in as: ' + userData[0].username);
+			response.redirect('/')
+		} else {
+			console.log('Invalid password')
+			response.redirect('/')
+		}
+	})
+});
 
-	// Set session to logged in user
-
-	// Redirect user to mainpage
+//////////////////////////////////////////////////////////////////////
+// Log out 		(logged in)			POST
+app.post('/logout', function(request, response) {
+	request.session.destroy();
+	response.redirect('/');
 });
 
 //////////////////////////////////////////////////////////////////////
 // Modify a user (original user)	POST
-app.post('/modifyuser', function(request, response) {
-	// Get values from the post
+app.post('/edituser', function(request, response) {
+	latlon = request.body.latlon.split(",")
+	console.log(request.body);
 
-	// Update the user in the database
+	User.findById(request.body.userID).then(function(usertoedit) {
+		usertoedit.updateAttributes({
+			location: latlon,
+			username: request.body.userName,
+			password: request.body.userPassword,
+			email: request.body.userEmail,
+			firstname: request.body.userFirstName,
+			lastname: request.body.userLastName
+		}).then(
+			response.redirect('/')
+		)
+	})
 });
 
 //////////////////////////////////////////////////////////////////////
 // Delete a user (admin)			POST
 app.post('/deleteuser', function(request, response) {
-	// Delete the user
-
-	// Redirect to main
+	deleteID = request.params.deleteID;
+	User.destroy({
+		where: {
+			id: deleteID
+		}
+	}).then(
+		response.redirect('/')
+	)
 });
 
 //////////////////////////////////////////////////////////////////////
@@ -215,12 +251,12 @@ app.post('/addspot', function(request, response) {
 
 	name = request.body.spotName;
 	type = request.body.spotType;
-	description = request.body.userLastName;
+	description = request.body.spotDescription;
 
 	photo = request.body.spotPhoto;
 	// Handle photo uploads in a later stage
 	// Right now we will do with just a link
-	videolink = [request.body.videolink, request.body.videoTime]
+	videolink = [request.body.videoLink, request.body.videoTime]
 
 	// Create new spot in the database
 	Spot.create({
@@ -232,27 +268,43 @@ app.post('/addspot', function(request, response) {
 		videolink: videolink,
 		location: location
 	}).then(function(newspot) {
-		response.redirect('/spot/' + newspot.dataValues.id)
+		response.redirect('/')
 	})
-
-	// Redirect the user to the new spot
 });
 
 //////////////////////////////////////////////////////////////////////
 // Modify a spot (original poster)	POST
-app.post('/modifyspot', function(request, response) {
-	// Get the values from the form
+app.post('/editspot', function(request, response) {
+	location = request.body.latlon.split(",")
+	videolink = [request.body.videoLink, request.body.videoTime]
 
-	// Update the spot in the database
+	Spot.findById(request.body.spotID).then(function(spottoedit) {
+		spottoedit.updateAttributes({
+			name: request.body.spotName,
+			type: request.body.spotType,
+			description: request.body.spotDescription,
+			author: request.body.spotAuthor,
+			photo: request.body.spotPhoto,
+			videolink: videolink,
+			location: location
+		}).then(
+			response.redirect('/')
+		)
+	})
 });
 
 //////////////////////////////////////////////////////////////////////
 // Delete a spot (admin)			POST
-app.post('/deletespot', function(request, response) {
+app.post('/deletespot/:deleteID', function(request, response) {
 	// Get spot to delete from post
-
-	// Delete post
-
+	deleteID = request.params.deleteID;
+	Spot.destroy({
+		where: {
+			id: deleteID
+		}
+	}).then(
+		response.redirect('/')
+	)
 });
 
 ///////////////////////////////////////////////////////////////
