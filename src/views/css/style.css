@@ -1,5 +1,90 @@
-html, body { height: 100%; margin: 0; padding: 0; }
+html,
+body
+{
+    height: 100%;
+    margin: 0;
+    padding: 0;
+}
 
-#map { height: 100%; width: 60%; display: inline-block;}
+/* Index Page*/
+#container
+{
+	height: 100%;
+    margin: 0;
+    padding: 0;
+}
 
-#rightbar {height: 100%; width: 30%; display: inline-block; vertical-align: top; margin-left: 20px;}
+#map
+{
+    display: inline-block;
+
+    width: 60%;
+    height: 100%;
+}
+
+#main
+{
+    display: inline-block;
+
+    width: 30%;
+    height: 100%;
+    margin-left: 20px;
+
+    vertical-align: top;
+}
+
+#navigation
+{
+
+}
+
+#content
+{
+
+}
+
+#userdetails
+{
+
+}
+
+/* Specifics */
+#spotdetails
+{
+
+}
+
+#loginform
+{
+
+}
+
+#addspotform
+{
+
+}
+
+#adduserform
+{
+
+}
+
+#editspotform
+{
+
+}
+
+#edituserform
+{
+
+}
+
+#userinfo
+{
+
+}
+
+#registration
+{
+
+}

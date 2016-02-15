@@ -1,0 +1,20 @@
+script.
+	$( document ).ready(function() {		
+		$('#editspot').click(function(){
+			$('#content').load('/editspot/#{spotid}')
+		})
+	});
+
+div(id="spotdetails")
+	p= 'name' + name
+	p= 'type ' + type
+	p= 'description ' + description
+	//- img(src=photo)
+	p= 'videolink ' + videolink
+	p= 'videotime ' + videotime
+	p= 'author ' + author
+	p= 'userid ' + userid
+	p= 'spotid ' + spotid
+
+if userid === author
+	button(id="editspot") Edit Spot

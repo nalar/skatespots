@@ -8,7 +8,7 @@ var bodyParser = require('body-parser');
 var cookieParser = require('cookie-parser');
 var jade = require('jade');
 var pg = require('pg');
-var gm = require('gm');
+// var gm = require('gm');
 
 app = express();
 
@@ -79,27 +79,28 @@ var Spot = sequelize.define('spot', {
 //////////////////////////////////////////////////////////////////////
 // Landing page (anyone)			GET
 app.get('/', function(request, response) {
-	console.log(request.protocol + '://' + request.get('host') + request.originalUrl);
-	// Get current user info from userid stored in session
-	var feature = request.params.feature;
-	var featureID = request.params.id;
-
-	response.render('main', {
+	response.render('index', {
 		username: request.session.username,
-		userid: request.session.id
+		userid: request.session.userid
+	})
+});
+
+app.get('/userdetails', function(request, response) {
+	response.render('userdetails', {
+		username: request.session.username,
+		userid: request.session.userid
 	})
 });
 
 app.get('/adduser', function(request, response) {
-	// Get current user info from userid stored in session
-
 	response.render('adduser')
 });
 
 app.get('/addspot', function(request, response) {
-	// Get current user info from userid stored in session
-
-	response.render('addspot')
+	response.render('addspot', {
+		username: request.session.username,
+		userid: request.session.userid
+	})
 });
 
 app.get('/skatespots.json', function(request, response) {
@@ -115,19 +116,26 @@ app.get('/skatespots.json', function(request, response) {
 //////////////////////////////////////////////////////////////////////
 // Get spot info (anyone)			GET
 app.get('/getspotinfo/:spotid', function(request, response) {
-	// Find spot by id in database
 	Spot.findById(request.params.spotid).then(function(spotdata) {
-		// Return the spot data to be used by jquery
-		response.send(JSON.stringify(spotdata))
+		response.render('getspotinfo', {
+			spotid: spotdata.dataValues.id,
+			name: spotdata.dataValues.name,
+			type: spotdata.dataValues.type,
+			description: spotdata.dataValues.description,
+			photo: spotdata.dataValues.photo,
+			videolink: spotdata.dataValues.videolink[0],
+			videotime: spotdata.dataValues.videolink[1],
+			author: spotdata.dataValues.author,
+			username: request.session.username,
+			userid: request.session.userid
+		})
 	})
 });
 
 //////////////////////////////////////////////////////////////////////
 // Get user info (anyone)			GET
 app.get('/getuserinfo/:infoid', function(request, response) {
-	// Find user by id in database
 	User.findById(request.params.infoid).then(function(userdata) {
-		// Return the user data to be used by jquery
 		response.send(userdata)
 	})
 });
@@ -135,23 +143,32 @@ app.get('/getuserinfo/:infoid', function(request, response) {
 //////////////////////////////////////////////////////////////////////
 // Spot Edit 				GET
 app.get('/editspot/:id', function(request, response) {
+
 	Spot.findById(request.params.id).then(function(spottoedit) {
-		response.render('editspot', {
-			spottoedit: spottoedit,
-			user: request.session.username
-		})
+		if (spottoedit.author == request.session.userid) {
+			response.render('editspot', {
+				spottoedit: spottoedit,
+				user: request.session.username
+			})
+		} else {
+			response.send('Don\'t try and hack!')
+		}
 	})
 });
 
 //////////////////////////////////////////////////////////////////////
 // User Edit 						GET
 app.get('/edituser/:id', function(request, response) {
-	User.findById(request.params.id).then(function(usertoedit) {
-		response.render('edituser', {
-			usertoedit: usertoedit,
-			user: request.session.username
+	if (request.params.id == request.session.userid) {
+		User.findById(request.params.id).then(function(usertoedit) {
+			response.render('edituser', {
+				usertoedit: usertoedit,
+				user: request.session.username
+			})
 		})
-	})
+	} else {
+		response.send('Don\'t try and hack!')
+	}
 });
 
 //////////////////////////////////////////////////////////////////////
@@ -177,7 +194,7 @@ app.post('/register', function(request, response) {
 		lastname: lastname
 	}).then(function(newuser) {
 		request.session.userid = newuser.dataValues.id;
-		request.session.username = newuser.dataValues.name;
+		request.session.username = newuser.dataValues.username;
 		response.redirect('/');
 	})
 });
@@ -185,21 +202,21 @@ app.post('/register', function(request, response) {
 //////////////////////////////////////////////////////////////////////
 // Log in 		(not logged in)		POST
 app.post('/login', function(request, response) {
-	User.findAll({
+	User.findOne({
 		where: {
 			username: request.body.username
 		}
-	}).then(function(userData) {
-		if (userData[0].password === request.body.userpass) {
-			request.session.userid = userData[0].id;
-			request.session.username = userData[0].username;
-			console.log('Succesfully logged in as: ' + userData[0].username);
-			response.redirect('/')
+	}).then(function(user) {
+		if (user.password === request.body.userpass) {
+			request.session.userid = user.id;
+			request.session.username = user.username;
+			response.send('Succesfully logged in as: ' + user.username);
 		} else {
-			console.log('Invalid password')
-			response.redirect('/')
+			response.send('Invalid password')
 		}
-	})
+	}, function(error) {
+		response.send('Invalid user or password')
+	});
 });
 
 //////////////////////////////////////////////////////////////////////
@@ -214,32 +231,39 @@ app.post('/logout', function(request, response) {
 app.post('/edituser', function(request, response) {
 	latlon = request.body.latlon.split(",")
 	console.log(request.body);
-
-	User.findById(request.body.userID).then(function(usertoedit) {
-		usertoedit.updateAttributes({
-			location: latlon,
-			username: request.body.userName,
-			password: request.body.userPassword,
-			email: request.body.userEmail,
-			firstname: request.body.userFirstName,
-			lastname: request.body.userLastName
-		}).then(
-			response.redirect('/')
-		)
-	})
+	if (request.params.id == request.session.userid) {
+		User.findById(request.body.userID).then(function(usertoedit) {
+			usertoedit.updateAttributes({
+				location: latlon,
+				username: request.body.userName,
+				password: request.body.userPassword,
+				email: request.body.userEmail,
+				firstname: request.body.userFirstName,
+				lastname: request.body.userLastName
+			}).then(
+				response.send('Succesfully updated user!')
+			)
+		})
+	} else {
+		response.send('Don\'t try to hack!')
+	}
 });
 
 //////////////////////////////////////////////////////////////////////
 // Delete a user (admin)			POST
-app.post('/deleteuser', function(request, response) {
+app.post('/deleteuser/:deleteID', function(request, response) {
 	deleteID = request.params.deleteID;
-	User.destroy({
-		where: {
-			id: deleteID
-		}
-	}).then(
-		response.redirect('/')
-	)
+	if (request.params.id == request.session.userid) {
+		User.destroy({
+			where: {
+				id: deleteID
+			}
+		}).then(
+			response.send('Removed user!')
+		)
+	} else {
+		response.send('Don\'t try to hack!')
+	}
 });
 
 //////////////////////////////////////////////////////////////////////
@@ -268,7 +292,8 @@ app.post('/addspot', function(request, response) {
 		videolink: videolink,
 		location: location
 	}).then(function(newspot) {
-		response.redirect('/')
+		spotid = newspot.dataValues.id.toString()
+		response.send(spotid)
 	})
 });
 
@@ -279,17 +304,21 @@ app.post('/editspot', function(request, response) {
 	videolink = [request.body.videoLink, request.body.videoTime]
 
 	Spot.findById(request.body.spotID).then(function(spottoedit) {
-		spottoedit.updateAttributes({
-			name: request.body.spotName,
-			type: request.body.spotType,
-			description: request.body.spotDescription,
-			author: request.body.spotAuthor,
-			photo: request.body.spotPhoto,
-			videolink: videolink,
-			location: location
-		}).then(
-			response.redirect('/')
-		)
+		if (spottoedit.author == request.session.userid) {
+			spottoedit.updateAttributes({
+				name: request.body.spotName,
+				type: request.body.spotType,
+				description: request.body.spotDescription,
+				author: request.body.spotAuthor,
+				photo: request.body.spotPhoto,
+				videolink: videolink,
+				location: location
+			}).then(
+				response.send('Edited spot')
+			)
+		} else {
+			response.send('Don\'t try and hack!')
+		}
 	})
 });
 

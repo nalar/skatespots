@@ -1,77 +1,76 @@
-doctype html
-html
-	head
-		link(rel='stylesheet' href='/css/style.css')
-		script(src='https://code.jquery.com/jquery-2.2.0.min.js')
-	body
-		#map
-			script.
-				$( document ).ready(function() {
-				console.log( "ready!" );
-				})
+script.
+	map.data.setMap(null);
+	
+	var SpotLocation;
+	var SpotLocationArr = [0,0];
+	function placeMarker(location) {
+		if ( SpotLocation ) {
+			SpotLocation.setPosition(location);
+			SpotLocationArr[0] = location.lng();
+			SpotLocationArr[1] = location.lat();
+			$("#formlatlon").val(SpotLocationArr)
+		} else {
+			SpotLocation = new google.maps.Marker({
+			position: location,
+			map: map,
+			draggable: true
+		});
+		
+		SpotLocationArr[0] = location.lng();
+		SpotLocationArr[1] = location.lat();
+		$("#formlatlon").val(SpotLocationArr)
 
-			script(type='text/javascript').
-				var map;
-				
-				function initMap() {
-				
-				map = new google.maps.Map(document.getElementById('map'), {
-				center: {lat: 52.4, lng: 4.92},
-				zoom: 12
-				});
-				
-				var SpotLocation;
-				var SpotLocationArr = [0,0];
-				function placeMarker(location) {
-					if ( SpotLocation ) {
-						SpotLocation.setPosition(location);
-						SpotLocationArr[0] = location.lng();
-						SpotLocationArr[1] = location.lat();
-						$("#formlatlon").val(SpotLocationArr)
-					} else {
-						SpotLocation = new google.maps.Marker({
-							position: location,
-							map: map,
-							draggable: true
-						});
-						SpotLocationArr[0] = location.lng();
-						SpotLocationArr[1] = location.lat();
-						$("#formlatlon").val(SpotLocationArr)
+		SpotLocation.addListener('dragend', function(event) {
+			SpotLocationArr[0] = SpotLocation.getPosition().lng();
+			SpotLocationArr[1] = SpotLocation.getPosition().lat();
+			$("#formlatlon").val(SpotLocationArr)
+		});
+		}
+	}
 
-						SpotLocation.addListener('dragend', function(event) {
-							SpotLocationArr[0] = SpotLocation.getPosition().lng();
-							SpotLocationArr[1] = SpotLocation.getPosition().lat();
-							console.log(SpotLocationArr);
-							$("#formlatlon").val(SpotLocationArr)
-				});
-					}
-				}
+	addMarkerListener = map.addListener('click', function(event) {
+		placeMarker(event.latLng);
+	});
 
-				map.addListener('click', function(event) {
-					placeMarker(event.latLng);
-				});
-				}
+script.
+	$( document ).ready(function() {		
+		$( "#submitSpot" ).click(function(){
+			$.post('/addspot', {
+			latlon: $('#formlatlon').val(),
+			spotName: $('#spotName').val(),
+			spotType: $('#spotType').val(),
+			spotDescription: $('#spotDescription').val(),
+			spotPhoto: $('#spotPhoto').val(),
+			videoLink: $('#videoLink').val(),
+			videoTime: $('#videoTime').val(),
+			author: "#{userid}"
+			}).done(function(result){
+				google.maps.event.removeListener(addMarkerListener);
+				window.SpotLocation.setMap(null);
+				window.map.data.loadGeoJson('/skatespots.json')
+				window.map.data.setMap(map);
+				$('#content').load('/getspotinfo/'+result)
+			})
+		})
+	});
 
-			script(async defer src='https://maps.googleapis.com/maps/api/js?key=AIzaSyDmSbvLztiTx63qBwEO3JIzGZWWMmIYTh0&callback=initMap')
-		#rightbar
-			#header
-				h1 Welcome
-			#test
-			div(id="registerform")
-				h2 Add a spot
-				form(name="addSpot" action="/addspot" method="post")
-					input(type="text" id="formlatlon" name="latlon" value="latlon")
-					br
-					input(type="text" name="spotName" placeholder="Name")
-					br
-					input(type="text" name="spotType" placeholder="Type")
-					br
-					input(type="text" name="spotDescription" placeholder="description")
-					br
-					input(type="text" name="spotPhoto" placeholder="Photo")
-					br
-					input(type="text" name="videoLink" placeholder="Video")
-					br
-					input(type="text" name="videoTime" placeholder="Time")
-					br
-					button(type="submit" id="submitSpot") Add Spot
+if username != undefined
+	div(id="addspotform")
+		h2 Add a spot
+		input(type="text" id="formlatlon" value="latlon")
+		br
+		input(type="text" id="spotName" placeholder="Name")
+		br
+		input(type="text" id="spotType" placeholder="Type")
+		br
+		input(type="text" id="spotDescription" placeholder="description")
+		br
+		input(type="text" id="spotPhoto" placeholder="Photo")
+		br
+		input(type="text" id="videoLink" placeholder="Video")
+		br
+		input(type="text" id="videoTime" placeholder="Time")
+		br
+		button(type="submit" id="submitSpot") Add Spot
+else
+	p Please login first!

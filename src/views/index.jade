@@ -1,0 +1,69 @@
+doctype html
+html
+	head
+		link(rel='stylesheet' href='/css/style.css')
+		script(src='https://code.jquery.com/jquery-2.2.0.min.js')
+	body
+		#container
+			#map
+				script.
+					$( document ).ready(function() {
+						console.log( "ready!" );
+						$('#userdetails').load('/userdetails')
+						$('#addspotbutton').click(function(){
+							$('#content').load('/addspot')
+						})
+					})
+
+					
+
+				script(type='text/javascript').
+					var map;
+					
+					function initMap() {
+					
+					map = new google.maps.Map(document.getElementById('map'), {
+					center: {lat: 52.369, lng: 4.90},
+					zoom: 12
+					});
+
+					map.data.loadGeoJson('/skatespots.json')
+
+					map.data.setStyle(function(feature) {
+						var type = feature.getProperty('type');
+						var iconurl;
+						if(type === 'rail'){
+							iconurl = '/icons/rail.png';
+						} else if(type === 'curb'){
+							iconurl = '/icons/curb.png'
+						} else if(type === 'ledge'){
+							iconurl = '/icons/ledge.png'
+						} else if(type === 'bank'){
+							iconurl = '/icons/bank.png'
+						} else if(type === 'park'){
+							iconurl = '/icons/park.png'
+						} else if(type === 'shop'){
+							iconurl = '/icons/shop.png'
+						} else{
+							iconurl = '/icons/general.png'
+						}
+						return {
+							icon: iconurl
+						};
+					});
+
+					map.data.addListener('click', function(event) {
+						window.$('#content').load('/getspotinfo/'+event.feature.R.id)
+					});
+					}
+
+				script(async defer src='https://maps.googleapis.com/maps/api/js?key=AIzaSyDmSbvLztiTx63qBwEO3JIzGZWWMmIYTh0&callback=initMap')
+					
+			#main
+				#header
+					p Welcome to the spotdataba.se!
+				#navigation
+					button(id="addspotbutton") Add spot
+				#content
+					p This database contains all known skatespots in Amsterdam! Click the icons to load the information about the specific spot!
+				#userdetails
