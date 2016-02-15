@@ -207,15 +207,18 @@ app.post('/login', function(request, response) {
 			username: request.body.username
 		}
 	}).then(function(user) {
-		if (user.password === request.body.userpass) {
-			request.session.userid = user.id;
-			request.session.username = user.username;
-			response.send('Succesfully logged in as: ' + user.username);
-		} else {
-			response.send('Invalid password')
+		console.log(user)
+		if (user != null) {
+			if (user != null && user.password === request.body.userpass) {
+				request.session.userid = user.id;
+				request.session.username = user.username;
+				response.send('success');
+			} else {
+				response.send('Invalid password!')
+			}
+		} else{
+			response.send('Unknown username!')
 		}
-	}, function(error) {
-		response.send('Invalid user or password')
 	});
 });
 

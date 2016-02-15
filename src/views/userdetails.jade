@@ -17,8 +17,12 @@ script.
 				$.post('/login', {
 				username: $('#username').val(),
 				userpass: $('#userpass').val()
-				}).done(function() {
+				}).done(function(response) {
+					if(response == 'success'){
 					$('#userdetails').load('/userdetails')
+					} else{
+					$('#userdetails').append(response)
+					}
 				})
 				}
 		});
