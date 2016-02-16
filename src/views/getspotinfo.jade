@@ -30,7 +30,7 @@ div(id="spotdetails")
 	div(id="spottype")= type
 	img(id="spotphoto" src=photo)
 	div(id="spotdescription")= description
-
+if videolink != ""
 	div(id="videoinfo") You can see this spot at #{videotime} in #[a(href=videolink target="blank") this video]
 		
 if userid === author

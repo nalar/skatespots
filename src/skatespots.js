@@ -8,7 +8,7 @@ var bodyParser = require('body-parser');
 var cookieParser = require('cookie-parser');
 var jade = require('jade');
 var bcrypt = require('bcrypt')
-var expressValidator = require('express-validator')
+// var expressValidator = require('express-validator')
 // var gm = require('gm');
 
 app = express();
@@ -16,7 +16,6 @@ app = express();
 app.use(bodyParser.urlencoded({
 	extended: true
 }));
-app.use(expressValidator())
 
 app.use(session({
 	secret: 'sk4t3sp0ts',
@@ -28,8 +27,6 @@ app.use(express.static(__dirname + '/views'));
 
 app.set('views', './src/views');
 app.set('view engine', 'jade');
-
-var salt = bcrypt.genSaltSync(10);
 
 //////////////////////////////////////////////////////////////////////
 // Define database models for sequelize
@@ -183,7 +180,7 @@ app.post('/register', function(request, response) {
 	// Get values from the post
 	latlon = request.body.latlon.split(",")
 	username = request.body.userName;
-	password = bcrypt.hashSync(request.body.userPassword, salt);
+	password = request.body.userPassword, salt;
 	email = request.body.userEmail;
 	firstname = request.body.userFirstName;
 	lastname = request.body.userLastName;
@@ -213,7 +210,7 @@ app.post('/login', function(request, response) {
 	}).then(function(user) {
 		console.log(user)
 		if (user != null) {
-			if (user.password === bcrypt.hashSync(request.body.userpass, salt)) {
+			if (user.password === request.body.userpass) {
 				request.session.userid = user.id;
 				request.session.username = user.username;
 				response.send('success');
