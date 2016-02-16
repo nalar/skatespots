@@ -345,7 +345,7 @@ app.post('/deletespot/:deleteID', function(request, response) {
 ///////////////////////////////////////////////////////////////
 // Start the server after syncing the database
 sequelize.sync().then(function() {
-	var server = app.listen(3000, function() {
+	var server = app.listen(3010, function() {
 		console.log('Skatespots running on localhost:' + server.address().port);
 	});
 });
