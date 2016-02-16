@@ -21,7 +21,7 @@ script.
 					if(response == 'success'){
 					$('#userdetails').load('/userdetails')
 					} else{
-					$('#userdetails').append(response)
+					$('#content').html(response)
 					}
 				})
 				}
@@ -29,23 +29,21 @@ script.
 
 		$("#registerbutton").click(function() {
 			console.log('clickedregister')
-			$('#userdetails').load('/adduser')
+			$('#content').load('/adduser')
 		});
 
 	})
 
 if username != undefined
 	#userinfo
-		p Welcome back #{username}
+		span(id="welcomemessage") Welcome back #{username}
 		button(id="logoutbutton") Logout
-		button(id="edituser") edituser
+		button(id="edituser") Edit
+		span(id="separator")
 else
 	#loginform
-		h2 Login
 		input(type="text" id="username" placeholder="Username")
-		br
 		input(type="password" id="userpass" placeholder="Password")
-		br
 		button(type="submit" id="loginbutton" ) Login
-	#registration
+		span(id="separator")
 		button(type ="submit" id="registerbutton") Click here to register

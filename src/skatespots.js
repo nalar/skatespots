@@ -7,7 +7,8 @@ var sequelize = require('sequelize');
 var bodyParser = require('body-parser');
 var cookieParser = require('cookie-parser');
 var jade = require('jade');
-var pg = require('pg');
+var bcrypt = require('bcrypt')
+var expressValidator = require('express-validator')
 // var gm = require('gm');
 
 app = express();
@@ -15,6 +16,7 @@ app = express();
 app.use(bodyParser.urlencoded({
 	extended: true
 }));
+app.use(expressValidator())
 
 app.use(session({
 	secret: 'sk4t3sp0ts',
@@ -26,6 +28,8 @@ app.use(express.static(__dirname + '/views'));
 
 app.set('views', './src/views');
 app.set('view engine', 'jade');
+
+var salt = bcrypt.genSaltSync(10);
 
 //////////////////////////////////////////////////////////////////////
 // Define database models for sequelize
@@ -179,7 +183,7 @@ app.post('/register', function(request, response) {
 	// Get values from the post
 	latlon = request.body.latlon.split(",")
 	username = request.body.userName;
-	password = request.body.userPassword;
+	password = bcrypt.hashSync(request.body.userPassword, salt);
 	email = request.body.userEmail;
 	firstname = request.body.userFirstName;
 	lastname = request.body.userLastName;
@@ -209,7 +213,7 @@ app.post('/login', function(request, response) {
 	}).then(function(user) {
 		console.log(user)
 		if (user != null) {
-			if (user != null && user.password === request.body.userpass) {
+			if (user.password === bcrypt.hashSync(request.body.userpass, salt)) {
 				request.session.userid = user.id;
 				request.session.username = user.username;
 				response.send('success');
@@ -286,18 +290,22 @@ app.post('/addspot', function(request, response) {
 	videolink = [request.body.videoLink, request.body.videoTime]
 
 	// Create new spot in the database
-	Spot.create({
-		name: name,
-		type: type,
-		description: description,
-		author: author,
-		photo: photo,
-		videolink: videolink,
-		location: location
-	}).then(function(newspot) {
-		spotid = newspot.dataValues.id.toString()
-		response.send(spotid)
-	})
+	if(request.session.userid != undefined){
+		Spot.create({
+			name: name,
+			type: type,
+			description: description,
+			author: author,
+			photo: photo,
+			videolink: videolink,
+			location: location
+		}).then(function(newspot) {
+			spotid = newspot.dataValues.id.toString()
+			response.send(spotid)
+		})
+	} else{
+		response.send('Please log in!')
+	}
 });
 
 //////////////////////////////////////////////////////////////////////

@@ -3,18 +3,36 @@ script.
 		$('#editspot').click(function(){
 			$('#content').load('/editspot/#{spotid}')
 		})
+		
+		$('#spotphoto').click(function(){
+			$("#photocontainer").fadeIn(500);
+			$("#coverdiv").fadeIn(500); 
+		})
+
+		$('#coverdiv').click(function(){
+			$("#photocontainer").fadeOut(500);
+			$("#coverdiv").fadeOut(500); 
+		})
+
+		$('#bigphoto').click(function(){
+			$("#photocontainer").fadeOut(500);
+			$("#coverdiv").fadeOut(500); 
+		})
 	});
 
-div(id="spotdetails")
-	p= 'name' + name
-	p= 'type ' + type
-	p= 'description ' + description
-	//- img(src=photo)
-	p= 'videolink ' + videolink
-	p= 'videotime ' + videotime
-	p= 'author ' + author
-	p= 'userid ' + userid
-	p= 'spotid ' + spotid
+#coverdiv
 
+div(id="photocontainer")
+	img(id="bigphoto" src=photo)
+
+div(id="spotdetails")
+	div(id="spotname")= name
+	div(id="spottype")= type
+	img(id="spotphoto" src=photo)
+	div(id="spotdescription")= description
+
+	div(id="videoinfo") You can see this spot at #{videotime} in #[a(href=videolink target="blank") this video]
+		
 if userid === author
-	button(id="editspot") Edit Spot
+	div(id="editspotlink")
+		button(id="editspot") Edit Spot

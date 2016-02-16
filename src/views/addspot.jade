@@ -33,39 +33,58 @@ script.
 	});
 
 script.
-	$( document ).ready(function() {		
-		$( "#submitSpot" ).click(function(){
-			$.post('/addspot', {
-			latlon: $('#formlatlon').val(),
-			spotName: $('#spotName').val(),
-			spotType: $('#spotType').val(),
-			spotDescription: $('#spotDescription').val(),
-			spotPhoto: $('#spotPhoto').val(),
-			videoLink: $('#videoLink').val(),
-			videoTime: $('#videoTime').val(),
-			author: "#{userid}"
-			}).done(function(result){
-				google.maps.event.removeListener(addMarkerListener);
-				window.SpotLocation.setMap(null);
-				window.map.data.loadGeoJson('/skatespots.json')
-				window.map.data.setMap(map);
-				$('#content').load('/getspotinfo/'+result)
-			})
+	$(document).ready(function() {
+		$("#submitSpot").click(function() {
+			if ($('#formlatlon').val() == "" || $('#formlatlon').val() == "latlon" ||
+				$('#spotName').val() == "" ||
+				$('spotType').val() == "" ||
+				$('spotDescription').val() == "" ||
+				$('spotPhoto').val() == "") {
+				$('#submitSpot').text('Please fill in all required fields!')
+			} else {
+				$.post('/addspot', {
+					latlon: $('#formlatlon').val(),
+					spotName: $('#spotName').val(),
+					spotType: $('#spotType').val(),
+					spotDescription: $('#spotDescription').val(),
+					spotPhoto: $('#spotPhoto').val(),
+					videoLink: $('#videoLink').val(),
+					videoTime: $('#videoTime').val(),
+					author: "#{userid}"
+				}).done(function(result) {
+					if(result == 'error'){
+						$('#content').html('Please log in first')
+					}else{
+						google.maps.event.removeListener(addMarkerListener);
+						window.SpotLocation.setMap(null);
+						window.map.data.loadGeoJson('/skatespots.json')
+						window.map.data.setMap(map);
+						$('#content').load('/getspotinfo/' + result)
+					}
+				})
+			}
 		})
 	});
 
 if username != undefined
 	div(id="addspotform")
 		h2 Add a spot
-		input(type="text" id="formlatlon" value="latlon")
+		p Click anywhere on the map to drop the location pin for the spot.
+		input(type="hidden" id="formlatlon" value="latlon")
 		br
-		input(type="text" id="spotName" placeholder="Name")
+		input(type="text" id="spotName" placeholder="Name  (required)")
 		br
-		input(type="text" id="spotType" placeholder="Type")
+		select(id="spotType")
+			option(value="rail") Rail
+			option(value="curb") Curb
+			option(value="ledge") Ledge
+			option(value="park") Park
+			option(value="bank") Bank
+			option(value="shop") Shop
 		br
-		input(type="text" id="spotDescription" placeholder="description")
+		input(type="text" id="spotDescription" placeholder="Description (required)")
 		br
-		input(type="text" id="spotPhoto" placeholder="Photo")
+		input(type="text" id="spotPhoto" placeholder="Photo (required)")
 		br
 		input(type="text" id="videoLink" placeholder="Video")
 		br

@@ -4,10 +4,12 @@
   "description": "Skate spots directory with google maps integration",
   "author": "Thijs Tel",
   "dependencies": {
+    "bcrypt": "^0.8.5",
     "body-parser": "^1.14.2",
     "cookie-parser": "^1.4.1",
     "express": "^4.13.4",
     "express-session": "^1.13.0",
+    "express-validator": "^2.19.1",
     "gm": "^1.21.1",
     "jade": "^1.11.0",
     "pg": "^4.4.4",
