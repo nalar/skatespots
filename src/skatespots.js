@@ -8,8 +8,8 @@ var bodyParser = require('body-parser');
 var cookieParser = require('cookie-parser');
 var jade = require('jade');
 var bcrypt = require('bcrypt')
-// var expressValidator = require('express-validator')
-// var gm = require('gm');
+	// var expressValidator = require('express-validator')
+	// var gm = require('gm');
 
 app = express();
 
@@ -177,27 +177,27 @@ app.get('/edituser/:id', function(request, response) {
 //////////////////////////////////////////////////////////////////////
 // Register 	(not logged in)		POST
 app.post('/register', function(request, response) {
-	// Get values from the post
-	latlon = request.body.latlon.split(",")
-	username = request.body.userName;
-	password = request.body.userPassword, salt;
-	email = request.body.userEmail;
-	firstname = request.body.userFirstName;
-	lastname = request.body.userLastName;
-
-	// Create new user in the database
-	User.create({
-		location: latlon,
-		username: username,
-		password: password,
-		email: email,
-		firstname: firstname,
-		lastname: lastname
-	}).then(function(newuser) {
-		request.session.userid = newuser.dataValues.id;
-		request.session.username = newuser.dataValues.username;
-		response.redirect('/');
-	})
+	bcrypt.hash(request.body.userPassword, 8, function(err, hash) {
+		latlon = request.body.latlon.split(",")
+		username = request.body.userName;
+		email = request.body.userEmail;
+		firstname = request.body.userFirstName;
+		lastname = request.body.userLastName;
+		password = hash;
+		// Create new user in the database
+		User.create({
+			location: latlon,
+			username: username,
+			password: password,
+			email: email,
+			firstname: firstname,
+			lastname: lastname
+		}).then(function(newuser) {
+			request.session.userid = newuser.dataValues.id;
+			request.session.username = newuser.dataValues.username;
+			response.redirect('/');
+		})
+	});
 });
 
 //////////////////////////////////////////////////////////////////////
@@ -210,14 +210,12 @@ app.post('/login', function(request, response) {
 	}).then(function(user) {
 		console.log(user)
 		if (user != null) {
-			if (user.password === request.body.userpass) {
+			bcrypt.compare(user.password, request.body.userpass, function(err, res) {
 				request.session.userid = user.id;
 				request.session.username = user.username;
-				response.send('success');
-			} else {
-				response.send('Invalid password!')
-			}
-		} else{
+				response.send('success')
+			});
+		} else {
 			response.send('Unknown username!')
 		}
 	});
@@ -287,7 +285,7 @@ app.post('/addspot', function(request, response) {
 	videolink = [request.body.videoLink, request.body.videoTime]
 
 	// Create new spot in the database
-	if(request.session.userid != undefined){
+	if (request.session.userid != undefined) {
 		Spot.create({
 			name: name,
 			type: type,
@@ -300,7 +298,7 @@ app.post('/addspot', function(request, response) {
 			spotid = newspot.dataValues.id.toString()
 			response.send(spotid)
 		})
-	} else{
+	} else {
 		response.send('Please log in!')
 	}
 });
