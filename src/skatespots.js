@@ -3,18 +3,16 @@
 //////////////////////////////////////////////////////////////////////
 var express = require('express');
 var session = require('express-session');
+var pg = require('pg')
 var sequelize = require('sequelize');
 var bodyParser = require('body-parser');
 var cookieParser = require('cookie-parser');
 var jade = require('jade');
-var bcrypt = require('bcrypt')
-var multer  = require('multer')
+var bcrypt = require('bcrypt');
+var multer = require('multer');
+var multerupload = multer();
 
 app = express();
-
-app.use(bodyParser.urlencoded({
-	extended: true
-}));
 
 app.use(session({
 	secret: 'sk4t3sp0ts',
@@ -175,7 +173,9 @@ app.get('/edituser/:id', function(request, response) {
 // Post Routes
 //////////////////////////////////////////////////////////////////////
 // Register 	(not logged in)		POST
-app.post('/register', function(request, response) {
+app.post('/register', bodyParser.urlencoded({
+	extended: true
+}), function(request, response) {
 	bcrypt.hash(request.body.userPassword, 8, function(err, hash) {
 		username = request.body.userName;
 		email = request.body.userEmail;
@@ -199,7 +199,9 @@ app.post('/register', function(request, response) {
 
 //////////////////////////////////////////////////////////////////////
 // Log in 		(not logged in)		POST
-app.post('/login', function(request, response) {
+app.post('/login', bodyParser.urlencoded({
+	extended: true
+}), function(request, response) {
 	User.findOne({
 		where: {
 			username: request.body.username
@@ -226,13 +228,15 @@ app.post('/logout', function(request, response) {
 
 //////////////////////////////////////////////////////////////////////
 // Modify a user (original user)	POST
-app.post('/edituser', function(request, response) {
-	latlon = request.body.latlon.split(",")
+app.post('/edituser', bodyParser.urlencoded({
+	extended: true
+}), function(request, response) {
+	// latlon = request.body.latlon.split(",")
 	console.log(request.body);
 	if (request.params.id == request.session.userid) {
 		User.findById(request.body.userID).then(function(usertoedit) {
 			usertoedit.updateAttributes({
-				location: latlon,
+				// location: latlon,
 				username: request.body.userName,
 				password: request.body.userPassword,
 				email: request.body.userEmail,
@@ -249,7 +253,9 @@ app.post('/edituser', function(request, response) {
 
 //////////////////////////////////////////////////////////////////////
 // Delete a user (admin)			POST
-app.post('/deleteuser/:deleteID', function(request, response) {
+app.post('/deleteuser/:deleteID', bodyParser.urlencoded({
+	extended: true
+}), function(request, response) {
 	deleteID = request.params.deleteID;
 	if (request.params.id == request.session.userid) {
 		User.destroy({
@@ -266,7 +272,10 @@ app.post('/deleteuser/:deleteID', function(request, response) {
 
 //////////////////////////////////////////////////////////////////////
 // Add a spot 	(registered users)	POST
-app.post('/addspot', function(request, response) {
+app.post('/addspot', bodyParser.urlencoded({
+	extended: true
+}), function(request, response) {
+	console.log(request.body)
 	// Get values from the post	
 	location = request.body.latlon.split(",");
 	author = request.body.author;
@@ -301,7 +310,9 @@ app.post('/addspot', function(request, response) {
 
 //////////////////////////////////////////////////////////////////////
 // Modify a spot (original poster)	POST
-app.post('/editspot', function(request, response) {
+app.post('/editspot', bodyParser.urlencoded({
+	extended: true
+}), function(request, response) {
 	location = request.body.latlon.split(",")
 	videolink = [request.body.videoLink, request.body.videoTime]
 
@@ -326,7 +337,9 @@ app.post('/editspot', function(request, response) {
 
 //////////////////////////////////////////////////////////////////////
 // Delete a spot (admin)			POST
-app.post('/deletespot/:deleteID', function(request, response) {
+app.post('/deletespot/:deleteID', bodyParser.urlencoded({
+	extended: true
+}), function(request, response) {
 	// Get spot to delete from post
 	deleteID = request.params.deleteID;
 	Spot.destroy({

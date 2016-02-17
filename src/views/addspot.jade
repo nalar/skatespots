@@ -34,6 +34,35 @@ script.
 
 script.
 	$(document).ready(function() {
+		//- $("#submitSpotMulter").click(function() {
+		//- 	if ($('#formlatlon').val() == "" || $('#formlatlon').val() == "latlon" ||
+		//- 		$('#spotName').val() == "" ||
+		//- 		$('spotType').val() == "" ||
+		//- 		$('spotDescription').val() == "" ||
+		//- 		$('spotPhoto').val() == "") {
+		//- 		$('#submitSpot').text('Please fill in all required fields!')
+		//- 	} else {
+		//- 		console.log('swag')
+		//- 		var formData = new FormData($('#addspotsinput'))
+		//- 		$.ajax({
+		//- 	        type:'post',
+		//- 	        url: '/addspot',
+		//- 	        contentType: false,
+		//- 	        data: formData
+		//- 	    }).success(function(result) {
+		//- 			if(result == 'error'){
+		//- 				$('#content').html('Please log in first')
+		//- 			}else{
+		//- 				google.maps.event.removeListener(addMarkerListener);
+		//- 				window.SpotLocation.setMap(null);
+		//- 				window.map.data.loadGeoJson('/skatespots.json')
+		//- 				window.map.data.setMap(map);
+		//- 				$('#content').load('/getspotinfo/' + result)
+		//- 			}
+		//- 		})
+		//- 	}
+		//- })
+
 		$("#submitSpot").click(function() {
 			if ($('#formlatlon').val() == "" || $('#formlatlon').val() == "latlon" ||
 				$('#spotName').val() == "" ||
@@ -70,26 +99,29 @@ if username != undefined
 	div(id="addspotform")
 		h2 Add a spot
 		p Click anywhere on the map to drop the location pin for the spot.
-		input(type="hidden" id="formlatlon" value="latlon")
-		br
-		input(type="text" id="spotName" placeholder="Name  (required)")
-		br
-		select(id="spotType")
-			option(value="rail") Rail
-			option(value="curb") Curb
-			option(value="ledge") Ledge
-			option(value="park") Park
-			option(value="bank") Bank
-			option(value="shop") Shop
-		br
-		input(type="text" id="spotDescription" placeholder="Description (required)")
-		br
-		input(type="text" id="spotPhoto" placeholder="Photo (required)")
-		br
-		input(type="text" id="videoLink" placeholder="Video")
-		br
-		input(type="text" id="videoTime" placeholder="Time")
-		br
-		button(type="submit" id="submitSpot") Add Spot
+		form(id="addspotinput")
+			input(type="hidden" id="formlatlon" value="latlon")
+			br
+			input(type="text" id="spotName" placeholder="Name  (required)")
+			br
+			select(id="spotType")
+				option(value="rail") Rail
+				option(value="curb") Curb
+				option(value="ledge") Ledge
+				option(value="park") Park
+				option(value="bank") Bank
+				option(value="shop") Shop
+			br
+			input(type="text" id="spotDescription" placeholder="Description (required)")
+			br
+			input(type="text" id="spotPhoto" placeholder="Photo (required)")
+			br
+			input(type="text" id="videoLink" placeholder="Video")
+			br
+			input(type="text" id="videoTime" placeholder="Time")
+			br
+			button(type="submit" id="submitSpot") Add Spot
+			br
+			button(type="submit" id="submitSpotMulter") Add Spot Multer
 else
 	p Please login first!
