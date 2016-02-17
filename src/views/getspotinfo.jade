@@ -18,20 +18,35 @@ script.
 			$("#photocontainer").fadeOut(500);
 			$("#coverdiv").fadeOut(500); 
 		})
+
+		$('#minimalize').click(function(){
+			$('#spotdetails').toggle();
+			$('#minimalize').toggle();
+			$('#maximalize').toggle();
+		})
+
+		$('#maximalize').click(function(){
+			$('#spotdetails').toggle();
+			$('#minimalize').toggle();
+			$('#maximalize').toggle();
+		})
 	});
 
 #coverdiv
 
+div(id="minimalize") x
+div(id="maximalize") +
+
 div(id="photocontainer")
 	img(id="bigphoto" src=photo)
 
+div(id="spotname")= name
 div(id="spotdetails")
-	div(id="spotname")= name
 	div(id="spottype")= type
 	img(id="spotphoto" src=photo)
 	div(id="spotdescription")= description
-if videolink != ""
-	div(id="videoinfo") You can see this spot at #{videotime} in #[a(href=videolink target="blank") this video]
+	if videolink != ""
+		div(id="videoinfo") You can see this spot at #{videotime} in #[a(href=videolink target="blank") this video]
 		
 if userid === author
 	div(id="editspotlink")

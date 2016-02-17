@@ -1,50 +1,42 @@
-script(type='text/javascript').
-	map.data.setMap(null);
-
-	var UserLocation;
-	var UserLocationArr = [0,0];
-
-	function placeMarker(location) {
-		if ( UserLocation ) {
-			UserLocation.setPosition(location);
-			UserLocationArr[0] = location.lng();
-			UserLocationArr[1] = location.lat();
-			$("#formlatlon").val(UserLocationArr)
-		} else {
-			UserLocation = new google.maps.Marker({
-				position: location,
-				map: map,
-				draggable: true
-			});
-			
-			UserLocationArr[0] = location.lng();
-			UserLocationArr[1] = location.lat();
-			$("#formlatlon").val(UserLocationArr)
-				UserLocation.addListener('dragend', function(event) {
-				UserLocationArr[0] = UserLocation.getPosition().lng();
-				UserLocationArr[1] = UserLocation.getPosition().lat();
-				$("#formlatlon").val(UserLocationArr)
-			});
-		}
+script.
+	function validateEmail(email) {
+		var re = /\S+@\S+\.\S+/;
+		return re.test(email);
 	}
 
-	map.addListener('click', function(event) {
-		placeMarker(event.latLng);
+	$("#submitRegistration").click(function() {
+		if($('#userName').val() == "" || $('#userPassword').val() == "" || $('#userEmail').val() == "" || $('#userFirstName').val() == "" || $('#userLastName').val() == ""){
+				$('#submitRegistration').text('Please fill in all fields!')
+		}else if(!validateEmail($('#userEmail').val())){
+			$('#submitRegistration').text('Use an actual email address')
+		}else{
+			$.post('/register', {
+				userName: $('#userName').val(),
+				userPassword: $('#userPass').val(),
+				userEmail: $('#userEmail').val(),
+				userFirstName: $('#userFirstName').val(),
+				userLastName: $('#userLastName').val()
+			}).done(function(response) {
+				if(response == 'success'){
+					$('#userdetails').load('/userdetails')
+					$('#content').html('Succesfully registered!')
+				} else{
+					$('#content').append(response)
+				}
+			})
+		}
 	});
 
 div(id="adduserform")
 	h2 Register
-	form(name="addUser" action="/register" method="post")
-		input(type="text" id="formlatlon" name="latlon" value="latlon")
-		br
-		input(type="text" name="userName" placeholder="Username")
-		br
-		input(type="password" name="userPassword" placeholder="password")
-		br
-		input(type="text" name="userEmail" placeholder="Email")
-		br
-		input(type="text" name="userFirstName" placeholder="First Name")
-		br
-		input(type="text" name="userLastName" placeholder="Last Name")
-		br
-		button(type="submit" id="submitRegistration") Register
+	input(type="text" id="userName" placeholder="Username")
+	br
+	input(type="password" id="userPassword" placeholder="password")
+	br
+	input(type="text" id="userEmail" placeholder="Email")
+	br
+	input(type="text" id="userFirstName" placeholder="First Name")
+	br
+	input(type="text" id="userLastName" placeholder="Last Name")
+	br
+	button(type="submit" id="submitRegistration") Register

@@ -53,7 +53,7 @@ input
 #main
 {
     position: absolute;
-    top: 5%;
+    top: 7%;
     right: 2%;
 
     background-color: rgba(255, 255, 255, 0.90);
@@ -159,11 +159,11 @@ input
 
 #spotdetails
 {
-    padding-top: 10px;
 }
 
 #spotname
 {
+    padding-top: 10px;
     font-weight: bolder;
 }
 
@@ -200,6 +200,19 @@ input
 {
     padding-top: 5px;
     border-top: 1px solid rgba(0, 0, 0, 0.15);
+}
+
+#minimalize
+{
+    padding-top: 10px;
+    float: right;
+}
+
+#maximalize
+{
+    display: none;
+    padding-top: 10px;
+    float: right;
 }
 
 /* Forms */

@@ -8,8 +8,7 @@ var bodyParser = require('body-parser');
 var cookieParser = require('cookie-parser');
 var jade = require('jade');
 var bcrypt = require('bcrypt')
-	// var expressValidator = require('express-validator')
-	// var gm = require('gm');
+var multer  = require('multer')
 
 app = express();
 
@@ -178,7 +177,6 @@ app.get('/edituser/:id', function(request, response) {
 // Register 	(not logged in)		POST
 app.post('/register', function(request, response) {
 	bcrypt.hash(request.body.userPassword, 8, function(err, hash) {
-		latlon = request.body.latlon.split(",")
 		username = request.body.userName;
 		email = request.body.userEmail;
 		firstname = request.body.userFirstName;
@@ -186,7 +184,6 @@ app.post('/register', function(request, response) {
 		password = hash;
 		// Create new user in the database
 		User.create({
-			location: latlon,
 			username: username,
 			password: password,
 			email: email,
@@ -195,7 +192,7 @@ app.post('/register', function(request, response) {
 		}).then(function(newuser) {
 			request.session.userid = newuser.dataValues.id;
 			request.session.username = newuser.dataValues.username;
-			response.redirect('/');
+			response.send('success');
 		})
 	});
 });
@@ -208,7 +205,6 @@ app.post('/login', function(request, response) {
 			username: request.body.username
 		}
 	}).then(function(user) {
-		console.log(user)
 		if (user != null) {
 			bcrypt.compare(user.password, request.body.userpass, function(err, res) {
 				request.session.userid = user.id;

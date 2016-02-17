@@ -1,43 +1,8 @@
 script.
-	map.data.setMap(null);
-	
-	var UserLocation;
-	var UserLocationArr = [0,0];
-	function placeMarker(location) {
-		if ( UserLocation ) {
-			UserLocation.setPosition(location);
-			UserLocationArr[0] = location.lng();
-			UserLocationArr[1] = location.lat();
-			$("#formlatlon").val(UserLocationArr)
-		} else {
-			UserLocation = new google.maps.Marker({
-			position: location,
-			map: map,
-			draggable: true
-		});
-		
-		UserLocationArr[0] = location.lng();
-		UserLocationArr[1] = location.lat();
-		$("#formlatlon").val(UserLocationArr)
-
-		UserLocation.addListener('dragend', function(event) {
-			UserLocationArr[0] = UserLocation.getPosition().lng();
-			UserLocationArr[1] = UserLocation.getPosition().lat();
-			$("#formlatlon").val(UserLocationArr)
-		});
-		}
-	}
-
-	addMarkerListener = map.addListener('click', function(event) {
-		placeMarker(event.latLng);
-	});
-
-script.
 	$( document ).ready(function() {		
 		$('#editUserButton').click(function(){
 			console.log('clicked')
 			$.post('/edituser', {
-			latlon: $('#formlatlon').val(),
 			userID: $('#userID').val(),
 			userName: $('#userName').val(),
 			userPassword: $('#userPassword').val(),
@@ -56,11 +21,7 @@ script.
 div(id="edituserform")
 	h2 Modify User
 	input(type="hidden" id="userID" value=usertoedit.id)
-	input(type="text" id="formlatlon" name="latlon" value=usertoedit.location)
-	br
 	input(type="text" id="userName" value=usertoedit.username)
-	br
-	input(type="password" id="userPassword" value=usertoedit.password)
 	br
 	input(type="text" id="userEmail" value=usertoedit.email)
 	br
