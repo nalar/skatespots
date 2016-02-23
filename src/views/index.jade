@@ -17,6 +17,7 @@ html
 							$('#userdetails').load('/userdetails')
 							
 							$('#addspotbutton').click(function(){
+								$('#content').show()
 								$('#content').load('/addspot')
 							})
 							
@@ -75,6 +76,7 @@ html
 						//- })
 
 						map.data.addListener('click', function(event) {
+							$('#content').show()
 							window.$('#content').load('/getspotinfo/'+event.feature.R.id)
 						});
 						}
