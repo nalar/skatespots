@@ -1,110 +1,104 @@
-script.
-	map.data.setMap(null);
-	
-	var SpotLocation;
-	var SpotLocationArr = [0,0];
-	function placeMarker(location) {
-		if ( SpotLocation ) {
-			SpotLocation.setPosition(location);
+if username != undefined
+	script.
+		map.data.setMap(null);
+		
+		var SpotLocation;
+		var SpotLocationArr = [0,0];
+		function placeMarker(location) {
+			if ( SpotLocation ) {
+				SpotLocation.setMap(map)
+				SpotLocation.setPosition(location);
+				SpotLocationArr[0] = location.lng();
+				SpotLocationArr[1] = location.lat();
+				$("#formlatlon").val(SpotLocationArr)
+			} else {
+				SpotLocation = new google.maps.Marker({
+				position: location,
+				map: map,
+				draggable: true
+			});
+			
 			SpotLocationArr[0] = location.lng();
 			SpotLocationArr[1] = location.lat();
 			$("#formlatlon").val(SpotLocationArr)
-		} else {
-			SpotLocation = new google.maps.Marker({
-			position: location,
-			map: map,
-			draggable: true
-		});
-		
-		SpotLocationArr[0] = location.lng();
-		SpotLocationArr[1] = location.lat();
-		$("#formlatlon").val(SpotLocationArr)
 
-		SpotLocation.addListener('dragend', function(event) {
-			SpotLocationArr[0] = SpotLocation.getPosition().lng();
-			SpotLocationArr[1] = SpotLocation.getPosition().lat();
-			$("#formlatlon").val(SpotLocationArr)
-		});
+			SpotLocation.addListener('dragend', function(event) {
+				SpotLocationArr[0] = SpotLocation.getPosition().lng();
+				SpotLocationArr[1] = SpotLocation.getPosition().lat();
+				$("#formlatlon").val(SpotLocationArr)
+			});
+			}
 		}
-	}
 
-	addMarkerListener = map.addListener('click', function(event) {
-		placeMarker(event.latLng);
-	});
+		addMarkerListener = map.addListener('click', function(event) {
+			placeMarker(event.latLng);
+		});
 
-script.
-	$(document).ready(function() {
-		//- $("#submitSpotMulter").click(function() {
-		//- 	if ($('#formlatlon').val() == "" || $('#formlatlon').val() == "latlon" ||
-		//- 		$('#spotName').val() == "" ||
-		//- 		$('spotType').val() == "" ||
-		//- 		$('spotDescription').val() == "" ||
-		//- 		$('spotPhoto').val() == "") {
-		//- 		$('#submitSpot').text('Please fill in all required fields!')
-		//- 	} else {
-		//- 		console.log('swag')
-		//- 		var formData = new FormData($('#addspotsinput'))
-		//- 		$.ajax({
-		//- 	        type:'post',
-		//- 	        url: '/addspot',
-		//- 	        contentType: false,
-		//- 	        data: formData
-		//- 	    }).success(function(result) {
-		//- 			if(result == 'error'){
-		//- 				$('#content').html('Please log in first')
-		//- 			}else{
-		//- 				google.maps.event.removeListener(addMarkerListener);
-		//- 				window.SpotLocation.setMap(null);
-		//- 				window.map.data.loadGeoJson('/skatespots.json')
-		//- 				window.map.data.setMap(map);
-		//- 				$('#content').load('/getspotinfo/' + result)
-		//- 			}
-		//- 		})
-		//- 	}
-		//- })
+	script.
+		$(document).ready(function() {
+			$("#cancelbutton").click(function(){
+				google.maps.event.clearListeners(map, 'click');
+				if(SpotLocation){SpotLocation.setMap(null)}	
+				window.map.data.setMap(map);
 
-		$("#submitSpot").click(function() {
-			if ($('#formlatlon').val() == "" || $('#formlatlon').val() == "latlon" ||
-				$('#spotName').val() == "" ||
-				$('spotType').val() == "" ||
-				$('spotDescription').val() == "" ||
-				$('spotPhoto').val() == "") {
-				$('#submitSpot').text('Please fill in all required fields!')
-			} else {
-				$.post('/addspot', {
-					latlon: $('#formlatlon').val(),
-					spotName: $('#spotName').val(),
-					spotType: $('#spotType').val(),
-					spotDescription: $('#spotDescription').val(),
-					spotPhoto: $('#spotPhoto').val(),
-					videoLink: $('#videoLink').val(),
-					videoTime: $('#videoTime').val(),
-					author: "#{userid}"
-				}).done(function(result) {
-					if(result == 'error'){
-						$('#content').html('Please log in first')
-					}else{
-						google.maps.event.removeListener(addMarkerListener);
+				$('#content').html('<p>Welcome to Spotdataba.se, your premier source for blade spots.</p>')
+			})
+
+			$("#setposition").click(function(){
+				navigator.geolocation.getCurrentPosition(function(position) {
+					userposition = new google.maps.LatLng(position.coords.latitude, position.coords.longitude)
+					map.setCenter(userposition)
+					placeMarker(userposition)
+				})
+			})
+
+			$("#addspotinput").submit(function(event) {
+				
+				event.preventDefault();
+
+				var inputData = new FormData(this);
+				console.log(inputData)
+
+				if ($('#formlatlon').val() == "" || $('#formlatlon').val() == "latlon" ||
+					$('#spotName').val() == "" ||
+					$('#spotType').val() == "" ||
+					$('#spotDescription').val() == "" ||
+					$('#spotPhotoFile').val() == "") {
+					$('#submitSpot').text('Oops, looks like you forgot something!')
+				} else {
+					$.ajax({
+						url: '/addspot',
+						data: inputData,
+						processData: false,
+						contentType: false,
+						type: 'POST'
+					}).done(function(result){
+						google.maps.event.clearListeners(map, 'click');
 						window.SpotLocation.setMap(null);
 						window.map.data.loadGeoJson('/skatespots.json')
 						window.map.data.setMap(map);
 						$('#content').load('/getspotinfo/' + result)
-					}
-				})
-			}
-		})
-	});
+					}).fail(function(){
+						$('#content').html('<p>There was an error processing the spot, please try again!</p>')
+					})
+				}
+			})
+		});
 
-if username != undefined
 	div(id="addspotform")
 		h2 Add a spot
 		p Click anywhere on the map to drop the location pin for the spot.
-		form(id="addspotinput")
-			input(type="hidden" id="formlatlon" value="latlon")
+		button(id="setposition") Place pin on current location
+
+		form(id="addspotinput" enctype="multipart/form-data" method="post" action="/addspot")
+			input(type="hidden" id="formlatlon" name="latlon" value="latlon")
+
+			label Spot name
+			input(type="text" id="spotName" name="spotName" placeholder="Name  (required)")
 			br
-			input(type="text" id="spotName" placeholder="Name  (required)")
-			br
-			select(id="spotType")
+			
+			label Spot type
+			select(id="spotType" name="spotType")
 				option(value="rail") Rail
 				option(value="curb") Curb
 				option(value="ledge") Ledge
@@ -112,16 +106,24 @@ if username != undefined
 				option(value="bank") Bank
 				option(value="shop") Shop
 			br
-			input(type="text" id="spotDescription" placeholder="Description (required)")
+			
+			label Spot description
+			input(type="text" id="spotDescription" name="spotDescription" placeholder="Description (required)")
 			br
-			input(type="text" id="spotPhoto" placeholder="Photo (required)")
+
+			label Spot photo
+			input(type="file" name="spotPhotoFile" id="spotPhotoFile" accept="image/*")
 			br
-			input(type="text" id="videoLink" placeholder="Video")
+			
+			label Video link
+			input(type="text" id="videoLink" name="videoLink" placeholder="Video")
 			br
-			input(type="text" id="videoTime" placeholder="Time")
+			
+			label Video Time
+			input(type="text" id="videoTime" name="videoTime" placeholder="Time")
 			br
+			
 			button(type="submit" id="submitSpot") Add Spot
-			br
-			button(type="submit" id="submitSpotMulter") Add Spot Multer
+		button(id="cancelbutton") Cancel
 else
-	p Please login first!
+	p Please login or register to add spots to the database!

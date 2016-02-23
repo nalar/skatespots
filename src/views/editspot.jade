@@ -5,6 +5,7 @@ script.
 	var SpotLocationArr = [0,0];
 	function placeMarker(location) {
 		if ( SpotLocation ) {
+			SpotLocation.setMap(map)
 			SpotLocation.setPosition(location);
 			SpotLocationArr[0] = location.lng();
 			SpotLocationArr[1] = location.lat();
@@ -34,41 +35,77 @@ script.
 
 script.
 	$( document ).ready(function() {		
-		$( "#editSpot" ).click(function(){
-			$.post('/editspot', {
-			spotID: $('#spotID').val(),
-			latlon: $('#formlatlon').val(),
-			spotName: $('#spotName').val(),
-			spotType: $('#spotType').val(),
-			spotDescription: $('#spotDescription').val(),
-			spotPhoto: $('#spotPhoto').val(),
-			videoLink: $('#videoLink').val(),
-			videoTime: $('#videoTime').val(),
-			author: "#{userid}"
-			}).done(function(result){
-				google.maps.event.removeListener(addMarkerListener);
-				window.map.data.loadGeoJson('/skatespots.json')
-				window.map.data.setMap(map);
-				$('#content').html('Succesfully edited spot')
-			})
-		})
+		$("#editspotinput").submit(function(event) {
+			
+			event.preventDefault();
+
+			var inputData = new FormData(this);
+			console.log(inputData)
+
+			if ($('#formlatlon').val() == "" || $('#formlatlon').val() == "latlon" ||
+				$('#spotName').val() == "" ||
+				$('spotType').val() == "" ||
+				$('spotDescription').val() == "" ||
+				$('spotPhoto').val() == "") {
+				$('#submitSpot').text('Please fill in all required fields!')
+			} else {
+				$.ajax({
+					url: '/editspot',
+					data: inputData,
+					processData: false,
+					contentType: false,
+					type: 'POST'
+				}).done(function(result){
+					google.maps.event.clearListeners(map, 'click');
+					if(SpotLocation){SpotLocation.setMap(null)}	
+					window.map.data.forEach(function(feature) {
+						window.map.data.remove(feature);
+					});
+					window.map.data.loadGeoJson('/skatespots.json')
+					window.map.data.setMap(map);
+					$('#content').load('/getspotinfo/' + result)
+				}).fail(function(){
+					$('#content').html('Please log in first!')
+				})
+			}
+		})	
+
 	});
 
 div(id="editspotform")
 	h2 Edit spot
-	input(type="hidden" id="spotID" value=spottoedit.id)
-	input(type="text" id="formlatlon" name="latlon" value=spottoedit.location)
-	br
-	input(type="text" id="spotName" value=spottoedit.name)
-	br
-	input(type="text" id="spotType" value=spottoedit.type)
-	br
-	input(type="text" id="spotDescription" value=spottoedit.description)
-	br
-	input(type="text" id="spotPhoto" value=spottoedit.photo)
-	br
-	input(type="text" id="videoLink" value=spottoedit.videolink[0])
-	br
-	input(type="text" id="videoTime" value=spottoedit.videolink[1])
-	br
-	button(type="submit" id="editSpot") Edit Spot
+	form(id="editspotinput" enctype="multipart/form-data" method="post" action="/addspot")
+		input(type="hidden" id="spotID" name="spotID" value=spottoedit.id)
+		input(type="hidden" id="formlatlon" name="latlon" value=spottoedit.location)
+		
+		label Spot name
+		input(type="text" id="spotName" name="spotName" value=spottoedit.name)
+		br
+			
+		label Spot type
+		select(id="spotType" name="spotType" value=spottoedit.type)
+			option(value="rail") Rail
+			option(value="curb") Curb
+			option(value="ledge") Ledge
+			option(value="park") Park
+			option(value="bank") Bank
+			option(value="shop") Shop
+		br
+			
+		label Spot description
+		input(type="text" id="spotDescription" name="spotDescription" value=spottoedit.description)
+		br
+			
+		label Spot photo
+		input(type="text" id="spotPhoto" name="spotPhoto" value=spottoedit.photo)
+		br
+			
+		label Video link
+		input(type="text" id="videoLink" name="videoLink" value=spottoedit.videolink[0])
+		br
+			
+		label Video Time
+		input(type="text" id="videoTime" name="videoTime" value=spottoedit.videolink[1])
+		br
+			
+		button(type="submit" id="submitSpot") Edit Spot

@@ -3,6 +3,18 @@ script.
 		$('#editspot').click(function(){
 			$('#content').load('/editspot/#{spotid}')
 		})
+
+		$('#removespot').click(function(){
+			$.post('/deletespot/#{spotid}').done(function(){
+				window.map.data.forEach(function(feature) {
+					window.map.data.remove(feature);
+				});
+				window.map.data.loadGeoJson('/skatespots.json')
+				window.map.data.setMap(map);
+
+				$('#content').html('<p>Spot removed!</p>')
+			})
+		})
 		
 		$('#spotphoto').click(function(){
 			$("#photocontainer").fadeIn(500);
@@ -19,23 +31,9 @@ script.
 			$("#coverdiv").fadeOut(500); 
 		})
 
-		$('#minimalize').click(function(){
-			$('#spotdetails').toggle();
-			$('#minimalize').toggle();
-			$('#maximalize').toggle();
-		})
-
-		$('#maximalize').click(function(){
-			$('#spotdetails').toggle();
-			$('#minimalize').toggle();
-			$('#maximalize').toggle();
-		})
 	});
 
 #coverdiv
-
-div(id="minimalize") x
-div(id="maximalize") +
 
 div(id="photocontainer")
 	img(id="bigphoto" src=photo)
@@ -48,6 +46,8 @@ div(id="spotdetails")
 	if videolink != ""
 		div(id="videoinfo") You can see this spot at #{videotime} in #[a(href=videolink target="blank") this video]
 		
-if userid === author
-	div(id="editspotlink")
-		button(id="editspot") Edit Spot
+	if userid === author
+		div(id="editspotlink")
+			button(id="editspot") Edit Spot
+		div(id="removespotlink")
+			button(id="removespot") Remove Spot

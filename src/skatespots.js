@@ -10,7 +10,23 @@ var cookieParser = require('cookie-parser');
 var jade = require('jade');
 var bcrypt = require('bcrypt');
 var multer = require('multer');
-var multerupload = multer();
+
+var storage = multer.diskStorage({
+	destination: './src/views/spotphotos',
+	filename: function(request, file, cb) {
+		extension = file.originalname.split('.')[1]
+		var newfilename = request.body.spotName + '-' + Date.now();
+		cb(null, newfilename + '.' + extension)
+	}
+})
+
+var formsubmit = multer({
+	storage: storage,
+	limits: {
+		files: 1,
+		fileSize: 10000000
+	}
+});
 
 app = express();
 
@@ -22,8 +38,15 @@ app.use(session({
 
 app.use(express.static(__dirname + '/views'));
 
+app.use(logErrors);
+
 app.set('views', './src/views');
 app.set('view engine', 'jade');
+
+function logErrors(error, request, response, next) {
+  response.send('error')
+  next(err);
+}
 
 //////////////////////////////////////////////////////////////////////
 // Define database models for sequelize
@@ -231,12 +254,9 @@ app.post('/logout', function(request, response) {
 app.post('/edituser', bodyParser.urlencoded({
 	extended: true
 }), function(request, response) {
-	// latlon = request.body.latlon.split(",")
-	console.log(request.body);
 	if (request.params.id == request.session.userid) {
 		User.findById(request.body.userID).then(function(usertoedit) {
 			usertoedit.updateAttributes({
-				// location: latlon,
 				username: request.body.userName,
 				password: request.body.userPassword,
 				email: request.body.userEmail,
@@ -272,21 +292,15 @@ app.post('/deleteuser/:deleteID', bodyParser.urlencoded({
 
 //////////////////////////////////////////////////////////////////////
 // Add a spot 	(registered users)	POST
-app.post('/addspot', bodyParser.urlencoded({
-	extended: true
-}), function(request, response) {
-	console.log(request.body)
+app.post('/addspot', formsubmit.single('spotPhotoFile'), function(request, response) {
 	// Get values from the post	
+	console.log(request.file)
 	location = request.body.latlon.split(",");
-	author = request.body.author;
-
+	author = request.session.userid;
 	name = request.body.spotName;
 	type = request.body.spotType;
 	description = request.body.spotDescription;
-
-	photo = request.body.spotPhoto;
-	// Handle photo uploads in a later stage
-	// Right now we will do with just a link
+	photo = '/spotphotos/' + request.file.filename
 	videolink = [request.body.videoLink, request.body.videoTime]
 
 	// Create new spot in the database
@@ -310,9 +324,7 @@ app.post('/addspot', bodyParser.urlencoded({
 
 //////////////////////////////////////////////////////////////////////
 // Modify a spot (original poster)	POST
-app.post('/editspot', bodyParser.urlencoded({
-	extended: true
-}), function(request, response) {
+app.post('/editspot', formsubmit.array(), function(request, response) {
 	location = request.body.latlon.split(",")
 	videolink = [request.body.videoLink, request.body.videoTime]
 
@@ -326,8 +338,9 @@ app.post('/editspot', bodyParser.urlencoded({
 				photo: request.body.spotPhoto,
 				videolink: videolink,
 				location: location
-			}).then(
-				response.send('Edited spot')
+			}).then(function(editedspot){
+				response.send(editedspot.dataValues.id.toString())
+			}
 			)
 		} else {
 			response.send('Don\'t try and hack!')
@@ -341,13 +354,18 @@ app.post('/deletespot/:deleteID', bodyParser.urlencoded({
 	extended: true
 }), function(request, response) {
 	// Get spot to delete from post
-	deleteID = request.params.deleteID;
-	Spot.destroy({
-		where: {
-			id: deleteID
+	Spot.findById(request.params.deleteID).then(function(spottoedit) {
+		if (spottoedit.dataValues.author == request.session.userid) {
+			Spot.destroy({
+				where: {
+					id: request.params.deleteID
+				}
+			})
+		} else{
+			response.send('error')
 		}
-	}).then(
-		response.redirect('/')
+	}).done(
+		response.send('succes')
 	)
 });
 

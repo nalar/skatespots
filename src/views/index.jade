@@ -14,10 +14,22 @@ html
 				#map
 					script.
 						$( document ).ready(function() {
-							console.log( "ready!" );
 							$('#userdetails').load('/userdetails')
+							
 							$('#addspotbutton').click(function(){
 								$('#content').load('/addspot')
+							})
+							
+							$('#minimalize').click(function(){
+								$('#content').toggle();
+								$('#minimalize').toggle();
+								$('#maximalize').toggle();
+							})
+
+							$('#maximalize').click(function(){
+								$('#content').toggle();
+								$('#minimalize').toggle();
+								$('#maximalize').toggle();
 							})
 						})
 
@@ -28,7 +40,7 @@ html
 						
 						map = new google.maps.Map(document.getElementById('map'), {
 						center: {lat: 52.369, lng: 4.90},
-						zoom: 12
+						zoom: 14
 						});
 
 						map.data.loadGeoJson('/skatespots.json')
@@ -56,6 +68,12 @@ html
 							};
 						});
 
+						// Geolocation --> do you want to start the user zoomed in at current location?
+						//- navigator.geolocation.getCurrentPosition(function(position) {
+						//- 	userposition = new google.maps.LatLng(position.coords.latitude, position.coords.longitude)
+						//- 	map.setCenter(userposition)
+						//- })
+
 						map.data.addListener('click', function(event) {
 							window.$('#content').load('/getspotinfo/'+event.feature.R.id)
 						});
@@ -64,6 +82,8 @@ html
 					script(async defer src='https://maps.googleapis.com/maps/api/js?key=AIzaSyDmSbvLztiTx63qBwEO3JIzGZWWMmIYTh0&callback=initMap')
 					
 			#main
-				#content
-					p Welcome to Spotdataba.se, your premier source for blade spots.
-				
+				div(id="minimalize") x
+				div(id="maximalize") +
+				#contentcontainer
+					#content
+						p Welcome to Spotdataba.se, your premier source for blade spots.

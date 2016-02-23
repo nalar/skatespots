@@ -3,7 +3,7 @@ script.
 		$("#logoutbutton").click(function() {
 			$.post('/logout').done(function() {
 				$('#userdetails').load('/userdetails')
-				$('#content').html('Successfully logged out!')
+				$('#content').html('<p>Successfully logged out!</p>')
 			})
 		});
 
@@ -21,7 +21,7 @@ script.
 				}).done(function(response) {
 					if(response == 'success'){
 					$('#userdetails').load('/userdetails')
-					$('#content').html('Successfully logged in!')
+					$('#content').html('<p>Successfully logged in!</p>')
 					} else{
 					$('#content').html(response)
 					}

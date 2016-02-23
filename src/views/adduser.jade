@@ -4,6 +4,10 @@ script.
 		return re.test(email);
 	}
 
+	$("#cancelbutton").click(function() {
+		$('#content').html('<p>Welcome to Spotdataba.se, your premier source for blade spots.</p>')
+	})
+	
 	$("#submitRegistration").click(function() {
 		if($('#userName').val() == "" || $('#userPassword').val() == "" || $('#userEmail').val() == "" || $('#userFirstName').val() == "" || $('#userLastName').val() == ""){
 				$('#submitRegistration').text('Please fill in all fields!')
@@ -19,7 +23,7 @@ script.
 			}).done(function(response) {
 				if(response == 'success'){
 					$('#userdetails').load('/userdetails')
-					$('#content').html('Succesfully registered!')
+					$('#content').html('<p>Succesfully registered!</p>')
 				} else{
 					$('#content').append(response)
 				}
@@ -29,14 +33,25 @@ script.
 
 div(id="adduserform")
 	h2 Register
-	input(type="text" id="userName" placeholder="Username")
-	br
-	input(type="password" id="userPassword" placeholder="password")
-	br
-	input(type="text" id="userEmail" placeholder="Email")
-	br
-	input(type="text" id="userFirstName" placeholder="First Name")
-	br
-	input(type="text" id="userLastName" placeholder="Last Name")
-	br
-	button(type="submit" id="submitRegistration") Register
+	form(id="adduserform")
+		label Username
+		input(type="text" id="userName" placeholder="Username")
+		br
+
+		label Password
+		input(type="password" id="userPassword" placeholder="password")
+		br
+
+		label Email Address
+		input(type="text" id="userEmail" placeholder="Email")
+		br
+
+		label First Name
+		input(type="text" id="userFirstName" placeholder="First Name")
+		br
+
+		label Last Name
+		input(type="text" id="userLastName" placeholder="Last Name")
+		br
+		button(type="submit" id="submitRegistration") Register
+	button(id="cancelbutton") Cancel
