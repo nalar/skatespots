@@ -23,7 +23,7 @@ a
 #header
 {
     display: block;
-    padding: 5px 5px 5px 20px;
+    padding: 10px 5px 5px 20px;
     border-bottom: solid;
     border-width: 0.25px;
     height: 25px;
@@ -39,7 +39,7 @@ a
 #mapcontainer
 {
     width: 100%;
-    height: calc(100% - 35px);
+    height: calc(100% - 40px);
 }
 
 #map
@@ -51,7 +51,7 @@ a
 #main
 {
     position: absolute;
-    top: calc(0% + 45px);
+    top: calc(0% + 50px);
     right: 2%;
 
     background-color: rgba(255, 255, 255, 0.90);

@@ -66,6 +66,7 @@ if username != undefined
 					$('#spotPhotoFile').val() == "") {
 					$('#submitSpot').text('Oops, looks like you forgot something!')
 				} else {
+					$('#content').html('<p>Adding your spot, this may take a few seconds</p>')
 					$.ajax({
 						url: '/addspot',
 						data: inputData,

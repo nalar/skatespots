@@ -6,6 +6,8 @@ html
 	body
 		#container
 			#header
+				span Spotdataba.se
+				span(id="separator")
 				#navigation
 					button(id="addspotbutton") Add spot
 				span(id="separator")
@@ -17,17 +19,22 @@ html
 							$('#userdetails').load('/userdetails')
 							
 							$('#addspotbutton').click(function(){
-								$('#content').show()
 								$('#content').load('/addspot')
+								$('#content').show()
+								$('#minimalize').show();
+								$('#maximalize').hide();
 							})
 							
-							$('#minimalize').click(function(){
+							$('#minimalize').click(function(event){
+								event.preventDefault()
 								$('#content').toggle();
 								$('#minimalize').toggle();
 								$('#maximalize').toggle();
+								spotopen = false;
 							})
 
-							$('#maximalize').click(function(){
+							$('#maximalize').click(function(event){
+								event.preventDefault()
 								$('#content').toggle();
 								$('#minimalize').toggle();
 								$('#maximalize').toggle();
@@ -35,6 +42,8 @@ html
 						})
 
 					script(type='text/javascript').
+						var spotopen = false;
+
 						var map;
 						
 						function initMap() {
@@ -76,16 +85,28 @@ html
 						//- })
 
 						map.data.addListener('click', function(event) {
-							$('#content').show()
-							window.$('#content').load('/getspotinfo/'+event.feature.R.id)
+							if(spotopen){
+							 	spotopen = false;
+							 	$('#content').hide()
+							 	$('#minimalize').hide();
+							 	$('#maximalize').show();
+							}else{
+								$('#content').load('/getspotinfo/'+event.feature.R.id)
+								$('#content').show()
+								$('#minimalize').show();
+								$('#maximalize').hide();
+								spotopen = true;
+							}
 						});
 						}
 
 					script(async defer src='https://maps.googleapis.com/maps/api/js?key=AIzaSyDmSbvLztiTx63qBwEO3JIzGZWWMmIYTh0&callback=initMap')
 					
 			#main
-				div(id="minimalize") x
-				div(id="maximalize") +
+				div(id="minimalize")
+					a(href="#") x
+				div(id="maximalize")
+					a(href="#") +
 				#contentcontainer
 					#content
 						p Welcome to Spotdataba.se, your premier source for blade spots.

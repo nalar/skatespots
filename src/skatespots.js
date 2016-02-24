@@ -3,6 +3,7 @@
 //////////////////////////////////////////////////////////////////////
 var express = require('express');
 var session = require('express-session');
+var fs = require('fs')
 var pg = require('pg')
 var sequelize = require('sequelize');
 var bodyParser = require('body-parser');
@@ -10,6 +11,7 @@ var cookieParser = require('cookie-parser');
 var jade = require('jade');
 var bcrypt = require('bcrypt');
 var multer = require('multer');
+var gm = require('gm')
 
 var storage = multer.diskStorage({
 	destination: './src/views/spotphotos',
@@ -44,8 +46,8 @@ app.set('views', './src/views');
 app.set('view engine', 'jade');
 
 function logErrors(error, request, response, next) {
-  response.send('error')
-  next(err);
+	response.send('error')
+	next(err);
 }
 
 //////////////////////////////////////////////////////////////////////
@@ -62,7 +64,11 @@ var sequelize = new Sequelize('skatespots', process.env.PSQL_USERNAME, process.e
 
 // Users
 var User = sequelize.define('user', {
-	username: Sequelize.TEXT,
+	username: {
+		type: Sequelize.TEXT,
+		allowNull: false,
+		unique: true
+	},
 	password: Sequelize.TEXT,
 	email: Sequelize.TEXT,
 	firstname: Sequelize.TEXT,
@@ -303,6 +309,7 @@ app.post('/addspot', formsubmit.single('spotPhotoFile'), function(request, respo
 	photo = '/spotphotos/' + request.file.filename
 	videolink = [request.body.videoLink, request.body.videoTime]
 
+
 	// Create new spot in the database
 	if (request.session.userid != undefined) {
 		Spot.create({
@@ -314,8 +321,15 @@ app.post('/addspot', formsubmit.single('spotPhotoFile'), function(request, respo
 			videolink: videolink,
 			location: location
 		}).then(function(newspot) {
-			spotid = newspot.dataValues.id.toString()
-			response.send(spotid)
+			gm('./src/views/' + photo).resize(2048, 1536).compress('JPEG').quality(25).write('./src/views/' + photo, function(err) {
+				if (err) {
+					console.log(err)
+				} else {
+					spotid = newspot.dataValues.id.toString()
+					console.log('done!')
+					response.send(spotid)
+				}
+			})
 		})
 	} else {
 		response.send('Please log in!')
@@ -338,10 +352,9 @@ app.post('/editspot', formsubmit.array(), function(request, response) {
 				photo: request.body.spotPhoto,
 				videolink: videolink,
 				location: location
-			}).then(function(editedspot){
+			}).then(function(editedspot) {
 				response.send(editedspot.dataValues.id.toString())
-			}
-			)
+			})
 		} else {
 			response.send('Don\'t try and hack!')
 		}
@@ -356,12 +369,14 @@ app.post('/deletespot/:deleteID', bodyParser.urlencoded({
 	// Get spot to delete from post
 	Spot.findById(request.params.deleteID).then(function(spottoedit) {
 		if (spottoedit.dataValues.author == request.session.userid) {
+			console.log('./src/views' + spottoedit.dataValues.photo)
+			fs.unlink('./src/views' + spottoedit.dataValues.photo)
 			Spot.destroy({
 				where: {
 					id: request.params.deleteID
 				}
 			})
-		} else{
+		} else {
 			response.send('error')
 		}
 	}).done(
