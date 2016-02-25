@@ -2,7 +2,11 @@ script.
 	$(document).ready(function() {
 		$("#username").click(function(event) {
 			event.preventDefault();
+			$('#minimalize').show();
+			$('#maximalize').hide();
+			$('#main').css('width', '40%')
 			$('#content').load('/edituser/#{userid}')
+			$('#content').show()
 		});
 
 		$("#loginbutton").click(function() {
@@ -14,8 +18,11 @@ script.
 				userpass: $('#userpass').val()
 				}).done(function(response) {
 					if(response == 'success'){
+					$('#main').css('width', '40%')
 					$('#userdetails').load('/userdetails')
 					$('#content').html('<p>Successfully logged in!</p>')
+					$('#content').show()
+
 					} else{
 					$('#content').html(response)
 					}
@@ -38,8 +45,8 @@ if username != undefined
 else
 	#loginformcontainer
 		form(id="loginform")
-		input(type="text" id="usernameinput" placeholder="Username")
-		input(type="password" id="userpass" placeholder="Password")
+			input(type="text" id="usernameinput" placeholder="Username")
+			input(type="password" id="userpass" placeholder="Password")
 	span(class="separator")
 	#userdetailbuttons
 		button(type="submit" id="loginbutton" ) Login

@@ -8,9 +8,11 @@ script.
 			$.post('/deletespot/#{spotid}').done(function(){
 				window.map.data.forEach(function(feature) {
 					window.map.data.remove(feature);
-				});
+				})
+
 				window.map.data.loadGeoJson('/skatespots.json')
-				window.map.data.setMap(map);
+				
+				window.map.data.setMap(map)
 
 				$('#content').html('<p>Spot removed!</p>')
 			})

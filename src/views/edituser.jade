@@ -19,8 +19,10 @@ script.
 		$("#logout").click(function(event) {
 			event.preventDefault();
 			$.post('/logout').done(function() {
+				$('#main').css('width', '40%')
 				$('#userdetails').load('/userdetails')
 				$('#content').html('<p>Successfully logged out!</p>')
+				$('#content').show()
 			})
 		});
 

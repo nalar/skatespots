@@ -3,7 +3,7 @@ html
 	head
 		link(rel='stylesheet' href='/css/style.css')
 		script(src='https://code.jquery.com/jquery-2.2.0.min.js')
-		meta(name="viewport" content="width=device-width, height=device-height, initial-scale=1")
+		meta(name="viewport" content="width=device-width, height=device-height, initial-scale=1, maximum-scale=1.0, user-scalable=0")
 		link(rel="icon" type="image/png" href="/icons/logo.png" sizes="160x160")
 		title Spotdataba.se
 	body
@@ -25,6 +25,7 @@ html
 							
 							$('#addspotbutton').click(function(){
 								event.preventDefault();
+								$('#main').css('width', '40%')	
 								$('#content').load('/addspot')
 								$('#content').show()
 								$('#minimalize').show();
@@ -33,6 +34,7 @@ html
 							
 							$('#minimalize').click(function(event){
 								event.preventDefault()
+								$('#main').css('width', '10%')	
 								$('#content').toggle();
 								$('#minimalize').toggle();
 								$('#maximalize').toggle();
@@ -41,6 +43,7 @@ html
 
 							$('#maximalize').click(function(event){
 								event.preventDefault()
+								$('#main').css('width', '40%')
 								$('#content').toggle();
 								$('#minimalize').toggle();
 								$('#maximalize').toggle();
@@ -56,7 +59,7 @@ html
 						
 						map = new google.maps.Map(document.getElementById('map'), {
 						center: {lat: 52.369, lng: 4.90},
-						zoom: 14, styles: [{"featureType": "poi", "stylers": [{ "visibility": "off" }]}]
+						zoom: 14, styles: [{"featureType":"landscape","stylers":[{"hue":"#FFBB00"},{"saturation":43.400000000000006},{"lightness":37.599999999999994},{"gamma":1}]},{"featureType":"road.highway","stylers":[{"hue":"#FFC200"},{"saturation":-61.8},{"lightness":45.599999999999994},{"gamma":1}]},{"featureType":"road.arterial","stylers":[{"hue":"#FF0300"},{"saturation":-100},{"lightness":51.19999999999999},{"gamma":1}]},{"featureType":"road.local","stylers":[{"hue":"#FF0300"},{"saturation":-100},{"lightness":52},{"gamma":1}]},{"featureType":"water","stylers":[{"hue":"#0078FF"},{"saturation":-13.200000000000003},{"lightness":2.4000000000000057},{"gamma":1}]},{"featureType":"poi","stylers":[{"visibility":"off"}]}]
 						});
 
 						map.data.loadGeoJson('/skatespots.json')
@@ -93,10 +96,12 @@ html
 						map.data.addListener('click', function(event) {
 							if(spotopen){
 							 	spotopen = false;
+							 	$('#main').css('width', '10%')	
 							 	$('#content').hide()
 							 	$('#minimalize').hide();
 							 	$('#maximalize').show();
 							}else{
+								$('#main').css('width', '40%')	
 								$('#content').load('/getspotinfo/'+event.feature.R.id)
 								$('#content').show()
 								$('#minimalize').show();
