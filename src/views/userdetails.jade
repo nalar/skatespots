@@ -11,7 +11,7 @@ script.
 
 		$("#loginbutton").click(function() {
 			if($('#usernameinput').val() == "" || $('#userpass').val() == ""){
-				$('#loginbutton').text('Please fill in both user and pass!')
+				$('#content').html('<p>Please fill in both user and pass!</p>')
 			}else{
 				$.post('/login', {
 				username: $('#usernameinput').val(),

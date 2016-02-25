@@ -19,16 +19,19 @@ script.
 		})
 		
 		$('#spotphoto').click(function(){
+			$("#viewport").attr("content", "width=device-width, height=device-height, initial-scale=1, user-scalable=1");
 			$("#photocontainer").fadeIn(500);
 			$("#coverdiv").fadeIn(500); 
 		})
 
 		$('#coverdiv').click(function(){
+			$("#viewport").attr("content", "width=device-width, height=device-height, initial-scale=1, maximum-scale=1.0, user-scalable=0");
 			$("#photocontainer").fadeOut(500);
 			$("#coverdiv").fadeOut(500); 
 		})
 
 		$('#bigphoto').click(function(){
+			$("#viewport").attr("content", "width=device-width, height=device-height, initial-scale=1, maximum-scale=1.0, user-scalable=0");
 			$("#photocontainer").fadeOut(500);
 			$("#coverdiv").fadeOut(500); 
 		})

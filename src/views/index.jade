@@ -3,7 +3,7 @@ html
 	head
 		link(rel='stylesheet' href='/css/style.css')
 		script(src='https://code.jquery.com/jquery-2.2.0.min.js')
-		meta(name="viewport" content="width=device-width, height=device-height, initial-scale=1, maximum-scale=1.0, user-scalable=0")
+		meta(id='viewport' name="viewport" content="width=device-width, height=device-height, initial-scale=1, maximum-scale=1.0, user-scalable=0")
 		link(rel="icon" type="image/png" href="/icons/logo.png" sizes="160x160")
 		title Spotdataba.se
 	body
@@ -87,11 +87,10 @@ html
 							};
 						});
 
-						// Geolocation --> do you want to start the user zoomed in at current location?
-						//- navigator.geolocation.getCurrentPosition(function(position) {
-						//- 	userposition = new google.maps.LatLng(position.coords.latitude, position.coords.longitude)
-						//- 	map.setCenter(userposition)
-						//- })
+						navigator.geolocation.getCurrentPosition(function(position) {
+							userposition = new google.maps.LatLng(position.coords.latitude, position.coords.longitude)
+							map.setCenter(userposition)
+						})
 
 						map.data.addListener('click', function(event) {
 							if(spotopen){

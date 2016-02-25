@@ -8,11 +8,12 @@ script.
 		$('#content').html('<p>Welcome to Spotdataba.se, your premier source for blade spots.</p>')
 	})
 	
-	$("#submitRegistration").click(function() {
+	$("#submitRegistration").click(function(event) {
+		event.preventDefault();
 		if($('#userName').val() == "" || $('#userPassword').val() == "" || $('#userEmail').val() == "" || $('#userFirstName').val() == "" || $('#userLastName').val() == ""){
-				$('#submitRegistration').text('Please fill in all fields!')
+				$('#registermessages').html('<p>Please fill in all fields!</p>')
 		}else if(!validateEmail($('#userEmail').val())){
-			$('#submitRegistration').text('Use an actual email address')
+			$('#registermessages').html('<p>Use an actual email address</p>')
 		}else{
 			$.post('/register', {
 				userName: $('#userName').val(),
@@ -32,6 +33,7 @@ script.
 	});
 
 div(id="adduserform")
+	div(id="registermessages")
 	h2 Register
 	form(id="adduserform")
 		label Username
