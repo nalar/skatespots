@@ -1,7 +1,6 @@
 script.
 	$( document ).ready(function() {		
 		$('#editUserButton').click(function(){
-			console.log('clicked')
 			$.post('/edituser', {
 			userID: $('#userID').val(),
 			userName: $('#userName').val(),
@@ -16,10 +15,30 @@ script.
 				$('#content').html('Succesfully updated user details!')
 			})
 		})
+
+		$("#logout").click(function(event) {
+			event.preventDefault();
+			$.post('/logout').done(function() {
+				$('#userdetails').load('/userdetails')
+				$('#content').html('<p>Successfully logged out!</p>')
+			})
+		});
+
+		$("#showeditform").click(function(event) {
+			event.preventDefault();
+			$("#edituserform").show()
+		});
 	});
 
-div(id="edituserform")
-	h2 Modify User
+div(id="logoutform")
+	a(href="#" id="logout")
+		span Logout
+	span(class="separator")
+	a(href="#" id="showeditform")
+		span Edit User
+
+div(id="edituserform" hidden)
+	h2 Modify your settings below
 	input(type="hidden" id="userID" value=usertoedit.id)
 	input(type="text" id="userName" value=usertoedit.username)
 	br

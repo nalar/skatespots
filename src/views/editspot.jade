@@ -45,8 +45,7 @@ script.
 			if ($('#formlatlon').val() == "" || $('#formlatlon').val() == "latlon" ||
 				$('#spotName').val() == "" ||
 				$('spotType').val() == "" ||
-				$('spotDescription').val() == "" ||
-				$('spotPhoto').val() == "") {
+				$('spotDescription').val() == "") {
 				$('#submitSpot').text('Please fill in all required fields!')
 			} else {
 				$.ajax({
@@ -96,9 +95,9 @@ div(id="editspotform")
 		input(type="text" id="spotDescription" name="spotDescription" value=spottoedit.description)
 		br
 			
-		label Spot photo
-		input(type="text" id="spotPhoto" name="spotPhoto" value=spottoedit.photo)
-		br
+		//- label Spot photo
+		//- input(type="text" id="spotPhoto" name="spotPhoto" value=spottoedit.photo)
+		//- br
 			
 		label Video link
 		input(type="text" id="videoLink" name="videoLink" value=spottoedit.videolink[0])

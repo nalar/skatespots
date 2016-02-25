@@ -3,14 +3,18 @@ html
 	head
 		link(rel='stylesheet' href='/css/style.css')
 		script(src='https://code.jquery.com/jquery-2.2.0.min.js')
+		meta(name="viewport" content="width=device-width, height=device-height, initial-scale=1")
+		<link rel="icon" type="image/png" href="/icons/logo.png" sizes="160x160">
 	body
 		#container
 			#header
-				span Spotdataba.se
-				span(id="separator")
+				#headerlogo
+					img(src="/icons/logo.png")
+				span(class="separator")
 				#navigation
-					button(id="addspotbutton") Add spot
-				span(id="separator")
+					a(href="#" id="addspotbutton")
+						span Add spot
+				span(class="separator")
 				#userdetails
 			#mapcontainer
 				#map
@@ -19,6 +23,7 @@ html
 							$('#userdetails').load('/userdetails')
 							
 							$('#addspotbutton').click(function(){
+								event.preventDefault();
 								$('#content').load('/addspot')
 								$('#content').show()
 								$('#minimalize').show();
@@ -50,7 +55,7 @@ html
 						
 						map = new google.maps.Map(document.getElementById('map'), {
 						center: {lat: 52.369, lng: 4.90},
-						zoom: 14
+						zoom: 14, styles: [{"featureType": "poi", "stylers": [{ "visibility": "off" }]}]
 						});
 
 						map.data.loadGeoJson('/skatespots.json')

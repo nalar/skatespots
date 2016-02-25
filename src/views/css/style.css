@@ -22,11 +22,15 @@ a
 /* Index Page*/
 #header
 {
-    display: block;
-    padding: 10px 5px 5px 20px;
+    display: inline-flex;
+    justify-content: flex-start;
+    width: 100%;
+    padding: 10px 5px 5px 5px;
+    margin: 0px 0px 0px 0px;
     border-bottom: solid;
     border-width: 0.25px;
     height: 25px;
+    background-color: #F3F3F3;
 }
 
 #container
@@ -67,42 +71,47 @@ a
     padding-bottom: 10px;
 }
 
-#separator
+.separator
 {
     margin-left: 10px;
     margin-right: 10px;
     border-right: 1px solid rgba(0, 0, 0, 0.15);
 }
 
-#navigation
+#headerlogo
+img
 {
-    display: inline-block;
+    max-width: 30px;
+    margin-top: -5px;
+    align-self: flex-start;
 }
 
-#content
+#usericon
 {
-
+    height: 15px;
 }
 
 #userdetails
 {
-    display: inline-block;
-    left:0%;
+    display: inline-flex;
+    margin-left: auto;
+    margin-right: 15px;
 }
 
-#welcomemessage{
-    padding-left: 10px;
-    padding-right: 10px;
-}
-
-#userinfo
+#userdetailbuttons
+button
 {
-
+    width: 75px;
 }
 
-#registration
+#username
 {
+    margin-left: 5px;
+}
 
+#logoutform
+{
+    margin-top: 10px;
 }
 
 /* Specifics */
@@ -148,10 +157,6 @@ a
     width: 100%;
     vertical-align: center;
     border-radius: 5px;
-}
-
-#spotdetails
-{
 }
 
 #spotname
@@ -208,37 +213,62 @@ a
     float: right;
 }
 
-/* Forms */
-#loginform
-{
-
-}
-
-#addspotform
-button
-{
-    font-size: 10pt;
-}
-
-#adduserform
-{
-
-}
-
-#editspotform
-{
-
-}
-
-#edituserform
-{
-
-}
-
 
 /* Mobile */
 @media only screen 
 and (min-device-width : 320px) 
 and (max-device-width : 568px) {
+
+    #header
+    {
+        border-width: 1px;
+        height: 50px;
+    }
+
+    #headerlogo
+    img
+    {
+        padding-top: 10px;
+    }
+
+    #mapcontainer
+    {
+        height: calc(100% - 65px)
+    }
     
+    #navigation
+    {
+        text-align: center;
+    }
+
+    #userdetails
+    {
+        display: inline-flex;
+        width: 250px;
+        margin-left: auto;
+    }
+
+    #userinfo
+    {
+        margin-left: auto;
+        margin-right: 15px;
+    }
+    
+    #userdetailbuttons
+    button
+    {
+        width: 60px;
+    }
+    
+    #userdetailbuttons
+    {
+        margin-right: 20px;
+    }
+
+    #main
+    {
+        position: absolute;
+        top: calc(0% + 70px);
+    }
+
 }

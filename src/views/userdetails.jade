@@ -1,22 +1,16 @@
 script.
 	$(document).ready(function() {
-		$("#logoutbutton").click(function() {
-			$.post('/logout').done(function() {
-				$('#userdetails').load('/userdetails')
-				$('#content').html('<p>Successfully logged out!</p>')
-			})
-		});
-
-		$("#edituser").click(function() {
+		$("#username").click(function(event) {
+			event.preventDefault();
 			$('#content').load('/edituser/#{userid}')
 		});
 
 		$("#loginbutton").click(function() {
-			if($('#username').val() == "" || $('#userpass').val() == ""){
+			if($('#usernameinput').val() == "" || $('#userpass').val() == ""){
 				$('#loginbutton').text('Please fill in both user and pass!')
 			}else{
 				$.post('/login', {
-				username: $('#username').val(),
+				username: $('#usernameinput').val(),
 				userpass: $('#userpass').val()
 				}).done(function(response) {
 					if(response == 'success'){
@@ -38,14 +32,15 @@ script.
 
 if username != undefined
 	#userinfo
-		span(id="welcomemessage") Welcome back #{username}
-		button(id="logoutbutton") Logout
-		button(id="edituser") Edit
-		span(id="separator")
+		img(src="/icons/user.png" id="usericon")
+		a(href="#" id="username")
+			span #{username}
 else
-	#loginform
-		input(type="text" id="username" placeholder="Username")
+	#loginformcontainer
+		form(id="loginform")
+		input(type="text" id="usernameinput" placeholder="Username")
 		input(type="password" id="userpass" placeholder="Password")
+	span(class="separator")
+	#userdetailbuttons
 		button(type="submit" id="loginbutton" ) Login
-		span(id="separator")
-		button(type ="submit" id="registerbutton") Click here to register
+		button(type ="submit" id="registerbutton") Register
