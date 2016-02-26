@@ -217,7 +217,6 @@ app.get('/search', function(request, response) {
 
 		for(i=0; i<allspots.length; i++){
 			if(request.query.searchTerm != "" && allspots[i].name.toLowerCase().includes(request.query.searchTerm.toLowerCase())){
-				console.log(allspots[i])
 				foundspots.push(allspots[i]);
 			}
 		}
@@ -333,7 +332,6 @@ app.post('/deleteuser/:deleteID', bodyParser.urlencoded({
 // Add a spot 	(registered users)	POST
 app.post('/addspot', formsubmit.single('spotPhotoFile'), function(request, response) {
 	// Get values from the post	
-	console.log(request.file)
 	location = request.body.latlon.split(",");
 	author = request.session.userid;
 	name = request.body.spotName;
@@ -402,7 +400,6 @@ app.post('/deletespot/:deleteID', bodyParser.urlencoded({
 	// Get spot to delete from post
 	Spot.findById(request.params.deleteID).then(function(spottoedit) {
 		if (spottoedit.dataValues.author == request.session.userid) {
-			console.log('./src/views' + spottoedit.dataValues.photo)
 			fs.unlink('./src/views' + spottoedit.dataValues.photo)
 			Spot.destroy({
 				where: {
