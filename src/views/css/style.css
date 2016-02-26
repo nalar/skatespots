@@ -1,5 +1,4 @@
 /* General settings*/
-
 html,
 body
 {
@@ -31,6 +30,7 @@ a
     border-width: 0.25px;
     height: 25px;
     background-color: #F3F3F3;
+    font-size: 14pt;
 }
 
 #container
@@ -80,10 +80,35 @@ a
 
 #headerlogo
 img
-{
+{   
     max-width: 30px;
     margin-top: -5px;
     align-self: flex-start;
+}
+
+#navigation
+{
+}
+
+#searchcontainer
+{    
+    align-self: flex-end;
+}
+
+#searchcontainer
+input
+{
+    width: 70%;
+    font-size: 14pt;
+    background-image: url('/icons/search.png');
+    background-size: 20px 20px;
+    background-repeat:no-repeat;
+    background-position: right center;
+}
+
+#userinfo
+{
+
 }
 
 #usericon
@@ -99,9 +124,7 @@ img
 }
 
 #userdetailbuttons
-button
 {
-    width: 75px;
 }
 
 #username
@@ -116,7 +139,6 @@ button
 
 /* Specifics */
 
-/*Spot Details*/
 #coverdiv
   {
     position: fixed;
@@ -154,7 +176,8 @@ button
 
 #bigphoto
 {
-    width: 100%;
+    max-width: 100%;
+    max-height: 100%;
     vertical-align: center;
     border-radius: 5px;
 }
@@ -185,20 +208,21 @@ button
     border-top: 1px solid rgba(0, 0, 0, 0.15);
     padding-top: 5px;
     padding-bottom: 5px;
+    margin-bottom: 5px;
     text-align: justify;
     border-bottom: 1px solid rgba(0, 0, 0, 0.15);
 }
 
 #videoinfo
 {
-    padding-top: 5px;
-    padding-bottom: 5px;
+    margin-bottom: 5px;
 }
 
-#editspotlink
+#spoteditbuttons
 {
-    padding-top: 5px;
-    border-top: 1px solid rgba(0, 0, 0, 0.15);
+    padding-bottom: 5px;
+    margin-bottom: 5px;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.15);
 }
 
 #minimalize
@@ -214,6 +238,10 @@ button
     float: right;
 }
 
+#searchresults
+{
+    padding-top: 10px;
+}
 
 /* Mobile */
 @media only screen 

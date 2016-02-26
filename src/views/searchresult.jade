@@ -1,0 +1,14 @@
+script.
+	$( document ).ready(function() {
+		$(".searchresult").click(function(event){
+			event.preventDefault()
+			$("#searchresults").load('/getspotinfo/' + $(this).children("a").attr("id"))
+		})	
+	})
+
+#searchresults
+	h2 Search Results
+	for spot in foundspots
+		#searchresults
+			div(class="searchresult")
+				a(id="#{spot.id}" href="#")= spot.name

@@ -16,11 +16,16 @@ html
 					a(href="#" id="addspotbutton")
 						span Add spot
 				span(class="separator")
+				#searchcontainer
+					form(id="searchBar", action="/search" method="post")
+						input(type="text", id="searchTerm", name="searchTerm" placeholder="Spotname" autocomplete="off")
 				#userdetails
 			#mapcontainer
 				#map
 					script.
 						$( document ).ready(function() {
+							var searched = false;
+
 							$('#userdetails').load('/userdetails')
 							
 							$('#addspotbutton').click(function(){
@@ -48,6 +53,27 @@ html
 								$('#minimalize').toggle();
 								$('#maximalize').toggle();
 							})
+							
+							$("#searchBar").submit(function(event){
+								event.preventDefault();
+							})
+							
+							$("#searchTerm").on('keyup',function(event) {
+								searched = true;
+								requestTime = event.timeStamp;
+								lastRequestTime = 0;
+								if(requestTime - lastRequestTime > 300 || lastRequestTime === 0){
+									lastRequestTime = requestTime
+									$('#main').css('width', '40%')
+									$('#minimalize').show();
+									$('#maximalize').hide();
+									$("#content").load("/search/?searchTerm="+$("#searchTerm").val())
+									$('#content').show()
+								} else{
+									console.log("Not updating, difference under 300ms: " + (requestTime-lastRequestTime) + "ms")
+								};;
+							});
+
 						})
 
 					script(type='text/javascript').
@@ -92,7 +118,7 @@ html
 							map.setCenter(userposition)
 						})
 
-						map.data.addListener('click', function(event) {
+						map.data.addListener('click', function(event) {			
 							if(spotopen){
 							 	spotopen = false;
 							 	$('#main').css('width', '10%')	
@@ -100,7 +126,7 @@ html
 							 	$('#minimalize').hide();
 							 	$('#maximalize').show();
 							}else{
-								$('#main').css('width', '40%')	
+								$('#main').css('width', '40%')
 								$('#content').load('/getspotinfo/'+event.feature.R.id)
 								$('#content').show()
 								$('#minimalize').show();

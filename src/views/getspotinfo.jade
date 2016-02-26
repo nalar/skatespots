@@ -1,5 +1,16 @@
 script.
-	$( document ).ready(function() {		
+	$( document ).ready(function() {
+		window.map.setCenter(new google.maps.LatLng(#{location[1]},#{location[0]}))
+
+		if($('#coverdiv').parent().attr('id') === 'searchresults'){
+			$('#searchresults').append('<a id="backtosearch" href="#">Back to search</a>')
+		}
+
+		$('#backtosearch').click(function(event){
+			event.preventDefault();
+			$("#content").load("/search/?searchTerm="+$("#searchTerm").val())
+		})
+
 		$('#editspot').click(function(){
 			$('#content').load('/editspot/#{spotid}')
 		})
@@ -52,7 +63,8 @@ div(id="spotdetails")
 		div(id="videoinfo") You can see this spot at #{videotime} in #[a(href=videolink target="blank") this video]
 		
 	if userid === author
-		div(id="editspotlink")
-			button(id="editspot") Edit Spot
-		div(id="removespotlink")
-			button(id="removespot") Remove Spot
+		#spoteditbuttons
+			div(id="editspotlink")
+				button(id="editspot") Edit Spot
+			div(id="removespotlink")
+				button(id="removespot") Remove Spot

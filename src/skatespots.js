@@ -136,6 +136,7 @@ app.get('/skatespots.json', function(request, response) {
 			type: sequelize.QueryTypes.SELECT
 		}
 	).then(function(results) {
+		var allspots = results[0].row_to_json
 		response.send(results[0].row_to_json)
 	})
 });
@@ -147,6 +148,7 @@ app.get('/getspotinfo/:spotid', function(request, response) {
 		response.render('getspotinfo', {
 			spotid: spotdata.dataValues.id,
 			name: spotdata.dataValues.name,
+			location: spotdata.dataValues.location,
 			type: spotdata.dataValues.type,
 			description: spotdata.dataValues.description,
 			photo: spotdata.dataValues.photo,
@@ -196,6 +198,37 @@ app.get('/edituser/:id', function(request, response) {
 	} else {
 		response.send('Don\'t try and hack!')
 	}
+});
+
+//////////////////////////////////////////////////////////////////////
+// Search the spots			GET
+app.get('/search', function(request, response) {
+	foundspots = []
+	searchterm = request.query.searchTerm;
+
+	Spot.findAll().then(function(allspots) {
+		allspots = allspots.map(function(spot) {
+			return {
+				name: spot.dataValues.name,
+				id: spot.dataValues.id,
+				location: spot.dataValues.location
+			}
+		})
+
+		for(i=0; i<allspots.length; i++){
+			if(request.query.searchTerm != "" && allspots[i].name.toLowerCase().includes(request.query.searchTerm.toLowerCase())){
+				console.log(allspots[i])
+				foundspots.push(allspots[i]);
+			}
+		}
+
+		if(foundspots.length > 0){
+			response.render("searchresult", {foundspots: foundspots})
+		} else{
+			response.send("<p>No results found</p>")
+		}
+	})
+
 });
 
 //////////////////////////////////////////////////////////////////////
