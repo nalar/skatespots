@@ -40,7 +40,7 @@ html
 							
 							$('#minimalize').click(function(event){
 								event.preventDefault()
-								$('#main').css('width', '10%')	
+								$('#main').css('width', '5%')	
 								$('#content').toggle();
 								$('#minimalize').toggle();
 								$('#maximalize').toggle();
@@ -132,7 +132,7 @@ html
 						map.data.addListener('click', function(event) {			
 							if(spotopen === event.feature.R.id){
 							 	spotopen = 0;
-							 	$('#main').css('width', '10%')	
+							 	$('#main').css('width', '5%')	
 							 	$('#content').hide()
 							 	$('#minimalize').hide();
 							 	$('#maximalize').show();

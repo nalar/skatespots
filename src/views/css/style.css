@@ -103,10 +103,14 @@ a
 }
 
 #headerlogo
+{
+    align-self: center;
+}
+
+#headerlogo
 img
 {   
-    max-width: 30px;
-    margin-top: -5px;
+    width: 30px;
     align-self: flex-start;
 }
 
@@ -122,7 +126,6 @@ img
 #searchcontainer
 input
 {
-    width: 70%;
     font-size: 14pt;
     background-image: url('/icons/search.png');
     background-size: 20px 20px;
@@ -272,6 +275,17 @@ input
 and (min-device-width : 320px) 
 and (max-device-width : 568px) {
 
+    input
+    {
+        padding: 0 0 0 0;
+    }
+
+    .separator
+    {
+        margin-left: 5px;
+        margin-right: 5px;
+    }
+
     #header
     {
         display: inline-flex;
@@ -282,13 +296,7 @@ and (max-device-width : 568px) {
 
     #headerlogo
     {
-        width: 55px;
-    }
-
-    #headerlogo
-    img
-    {
-        padding-top: 10px;
+        display: inline-flex;
     }
 
     #mapcontainer
@@ -304,18 +312,19 @@ and (max-device-width : 568px) {
     #userdetails
     {
         display: inline-flex;
-        width: 250px;
+        text-align: center;
     }
 
     #userdetails
     input
     {
-        width: 90%;
+        width: 100%;
     }
 
     #userinfo
     {
         margin-left: auto;
+        align-self: center;
     }
 
     #userdetailbuttons
@@ -326,7 +335,7 @@ and (max-device-width : 568px) {
     
     #userdetailbuttons
     {
-        margin-right: 20px;
+        padding-right: 20px;
     }
 
     #main
@@ -337,6 +346,7 @@ and (max-device-width : 568px) {
 
     #searchcontainer
     {
+        width: 80%;
         align-self: center;
     }
     
@@ -350,5 +360,4 @@ and (max-device-width : 568px) {
         background-repeat:no-repeat;
         background-position: right center;
     }
-
 }
