@@ -18,7 +18,8 @@ html
 				span(class="separator")
 				#searchcontainer
 					form(id="searchBar", action="/search" method="post")
-						input(type="text", id="searchTerm", name="searchTerm" placeholder="Spotname" autocomplete="off")
+						input(type="text", id="searchTerm", name="searchTerm" placeholder="Spot" autocomplete="off")
+				span(class="separator")
 				#userdetails
 			#mapcontainer
 				#map
@@ -58,6 +59,16 @@ html
 								event.preventDefault();
 							})
 							
+							$("#filtertype").change(function(event){
+								window.map.data.loadGeoJson('/skatespots.json', null, function(){
+									window.map.data.forEach(function(feature) {
+										if(feature.R.type != $("#filtertype").val()){
+											window.map.data.remove(feature)
+										}
+									});
+								})
+							})
+
 							$("#searchTerm").on('keyup',function(event) {
 								searched = true;
 								requestTime = event.timeStamp;
@@ -119,8 +130,8 @@ html
 						})
 
 						map.data.addListener('click', function(event) {			
-							if(spotopen){
-							 	spotopen = false;
+							if(spotopen === event.feature.R.id){
+							 	spotopen = 0;
 							 	$('#main').css('width', '10%')	
 							 	$('#content').hide()
 							 	$('#minimalize').hide();
@@ -131,7 +142,7 @@ html
 								$('#content').show()
 								$('#minimalize').show();
 								$('#maximalize').hide();
-								spotopen = true;
+								spotopen = event.feature.R.id;
 							}
 						});
 						}
@@ -146,3 +157,14 @@ html
 				#contentcontainer
 					#content
 						p Welcome to Spotdataba.se, your premier source for blade spots.
+
+			#filterbox
+				label Choose Filter: 
+				select(id="filtertype" name="filtertype")
+					option(value="rail") Rail
+					option(value="curb") Curb
+					option(value="ledge") Ledge
+					option(value="park") Park
+					option(value="bank") Bank
+					option(value="shop") Shop
+					option(value="general") General

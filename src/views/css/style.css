@@ -61,6 +61,8 @@ a
     background-color: rgba(255, 255, 255, 0.90);
 
     width: 40%;
+    max-height: 100%;
+    overflow: scroll;
     
     vertical-align: top;
 
@@ -69,6 +71,28 @@ a
     padding-left: 10px;
     padding-right: 10px;
     padding-bottom: 10px;
+}
+
+#filterbox
+{
+    position: absolute;
+    bottom: 2%;
+    left: 2%;
+
+    background-color: rgba(255, 255, 255, 0.90);
+
+    width: 30%;
+    max-height: 10%;
+    overflow: scroll;
+
+    vertical-align: center;
+
+    border-radius: 5px;
+
+    padding-left: 10px;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    padding-right: 10px;
 }
 
 .separator
@@ -250,8 +274,15 @@ and (max-device-width : 568px) {
 
     #header
     {
+        display: inline-flex;
         border-width: 1px;
         height: 50px;
+        font-size: 12pt;
+    }
+
+    #headerlogo
+    {
+        width: 55px;
     }
 
     #headerlogo
@@ -274,7 +305,12 @@ and (max-device-width : 568px) {
     {
         display: inline-flex;
         width: 250px;
-        margin-left: auto;
+    }
+
+    #userdetails
+    input
+    {
+        width: 90%;
     }
 
     #userinfo
@@ -297,6 +333,22 @@ and (max-device-width : 568px) {
     {
         position: absolute;
         top: calc(0% + 70px);
+    }
+
+    #searchcontainer
+    {
+        align-self: center;
+    }
+    
+    #searchcontainer
+    input
+    {
+        width: 100%;
+        font-size: 14pt;
+        background-image: url('/icons/search.png');
+        background-size: 20px 20px;
+        background-repeat:no-repeat;
+        background-position: right center;
     }
 
 }
