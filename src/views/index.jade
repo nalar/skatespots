@@ -60,13 +60,17 @@ html
 							})
 							
 							$("#filtertype").change(function(event){
-								window.map.data.loadGeoJson('/skatespots.json', null, function(){
-									window.map.data.forEach(function(feature) {
-										if(feature.R.type != $("#filtertype").val()){
-											window.map.data.remove(feature)
-										}
-									});
-								})
+								if($("#filtertype").val() == 'all'){
+									window.map.data.loadGeoJson('/skatespots.json')
+								}else{
+									window.map.data.loadGeoJson('/skatespots.json', null, function(){
+										window.map.data.forEach(function(feature) {
+											if(feature.R.type != $("#filtertype").val()){
+												window.map.data.remove(feature)
+											}
+										});
+									})
+								}
 							})
 
 							$("#searchTerm").on('keyup',function(event) {
@@ -161,6 +165,7 @@ html
 			#filterbox
 				label Choose Filter: 
 				select(id="filtertype" name="filtertype")
+					option(value="all" selected) All spots
 					option(value="rail") Rail
 					option(value="curb") Curb
 					option(value="ledge") Ledge

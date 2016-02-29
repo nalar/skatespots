@@ -1,6 +1,7 @@
 script.
 	$( document ).ready(function() {
 		window.map.setCenter(new google.maps.LatLng(#{location[1]},#{location[0]}))
+		window.map.setZoom(15)
 
 		if($('#coverdiv').parent().attr('id') === 'searchresults'){
 			$('#searchresults').append('<a id="backtosearch" href="#">Back to search</a>')
