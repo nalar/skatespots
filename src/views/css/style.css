@@ -39,8 +39,9 @@ textarea
     margin: 0 0 0 0;
     padding: 10px 0 9px 0;
 
-    border-width: .25px;
     border-bottom: solid;
+    border-bottom-width: 0.25px;
+    
     background-color: #f3f3f3;
 }
 
