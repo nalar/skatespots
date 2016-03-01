@@ -174,7 +174,7 @@ app.get('/getuserinfo/:infoid', function(request, response) {
 app.get('/editspot/:id', function(request, response) {
 
 	Spot.findById(request.params.id).then(function(spottoedit) {
-		if (spottoedit.author == request.session.userid) {
+		if (spottoedit.author == request.session.userid || request.session.userid == 1) {
 			response.render('editspot', {
 				spottoedit: spottoedit,
 				user: request.session.username
@@ -188,7 +188,7 @@ app.get('/editspot/:id', function(request, response) {
 //////////////////////////////////////////////////////////////////////
 // User Edit 						GET
 app.get('/edituser/:id', function(request, response) {
-	if (request.params.id == request.session.userid) {
+	if (request.params.id == request.session.userid || request.session.userid == 1) {
 		User.findById(request.params.id).then(function(usertoedit) {
 			response.render('edituser', {
 				usertoedit: usertoedit,
