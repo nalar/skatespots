@@ -63,7 +63,7 @@ div(id="spotdetails")
 	if videolink != ""
 		div(id="videoinfo") You can see this spot at #{videotime} in #[a(href=videolink target="blank") this video]
 		
-	if userid === author
+	if userid === author || userid === 1
 		#spoteditbuttons
 			div(id="editspotlink")
 				button(id="editspot") Edit Spot

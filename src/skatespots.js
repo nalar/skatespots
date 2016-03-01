@@ -215,15 +215,17 @@ app.get('/search', function(request, response) {
 			}
 		})
 
-		for(i=0; i<allspots.length; i++){
-			if(request.query.searchTerm != "" && allspots[i].name.toLowerCase().includes(request.query.searchTerm.toLowerCase())){
+		for (i = 0; i < allspots.length; i++) {
+			if (request.query.searchTerm != "" && allspots[i].name.toLowerCase().includes(request.query.searchTerm.toLowerCase())) {
 				foundspots.push(allspots[i]);
 			}
 		}
 
-		if(foundspots.length > 0){
-			response.render("searchresult", {foundspots: foundspots})
-		} else{
+		if (foundspots.length > 0) {
+			response.render("searchresult", {
+				foundspots: foundspots
+			})
+		} else {
 			response.send("<p>No results found</p>")
 		}
 	})
@@ -376,7 +378,7 @@ app.post('/editspot', formsubmit.array(), function(request, response) {
 	videolink = [request.body.videoLink, request.body.videoTime]
 
 	Spot.findById(request.body.spotID).then(function(spottoedit) {
-		if (spottoedit.author == request.session.userid) {
+		if (spottoedit.author == request.session.userid || request.session.userid == 1) {
 			spottoedit.updateAttributes({
 				name: request.body.spotName,
 				type: request.body.spotType,

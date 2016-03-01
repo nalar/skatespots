@@ -89,16 +89,21 @@ if username != undefined
 	div(id="addspotform")
 		h2 Add a spot
 		p Click anywhere on the map to drop the location pin for the spot.
+		
 		button(id="setposition") Place pin on current location
+		br
+		br
 
 		form(id="addspotinput" enctype="multipart/form-data" method="post" action="/addspot")
 			input(type="hidden" id="formlatlon" name="latlon" value="latlon")
 
 			label Spot name
+			br
 			input(type="text" id="spotName" name="spotName" placeholder="Name  (required)")
 			br
 			
 			label Spot type
+			br
 			select(id="spotType" name="spotType")
 				option(value="rail") Rail
 				option(value="curb") Curb
@@ -110,18 +115,22 @@ if username != undefined
 			br
 			
 			label Spot description
-			input(type="text" id="spotDescription" name="spotDescription" placeholder="Description (required)")
+			br
+			textarea(rows="4" type="text" id="spotDescription" name="spotDescription" placeholder="Description (required)")
 			br
 
 			label Spot photo
+			br
 			input(type="file" name="spotPhotoFile" id="spotPhotoFile" accept="image/*")
 			br
 			
 			label Video link
+			br
 			input(type="text" id="videoLink" name="videoLink" placeholder="Video")
 			br
-			
+
 			label Video Time
+			br
 			input(type="text" id="videoTime" name="videoTime" placeholder="Time")
 			br
 			
