@@ -238,10 +238,12 @@ app.post('/register', bodyParser.urlencoded({
 	extended: true
 }), function(request, response) {
 	bcrypt.hash(request.body.userPassword, 8, function(err, hash) {
+		console.log(request.body.userPassword)
 		username = request.body.userName;
 		email = request.body.userEmail;
 		firstname = request.body.userFirstName;
 		lastname = request.body.userLastName;
+		console.log(hash)
 		password = hash;
 		// Create new user in the database
 		User.create({
