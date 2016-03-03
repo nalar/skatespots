@@ -4,11 +4,11 @@ script.
 		return re.test(email);
 	}
 
-	$("#cancelbutton").click(function() {
+	$('#cancelbutton').click(function() {
 		$('#content').html('<p>Welcome to Spotdataba.se, your premier source for blade spots.</p>')
 	})
 	
-	$("#submitRegistration").click(function(event) {
+	$('#submitRegistration').click(function(event) {
 		event.preventDefault();
 		if($('#userName').val() == "" || $('#userPassword').val() == "" || $('#userEmail').val() == "" || $('#userFirstName').val() == "" || $('#userLastName').val() == ""){
 				$('#registermessages').html('<p>Please fill in all fields!</p>')

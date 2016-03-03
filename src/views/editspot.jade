@@ -9,7 +9,7 @@ script.
 			SpotLocation.setPosition(location);
 			SpotLocationArr[0] = location.lng();
 			SpotLocationArr[1] = location.lat();
-			$("#formlatlon").val(SpotLocationArr)
+			$('#formlatlon').val(SpotLocationArr)
 		} else {
 			SpotLocation = new google.maps.Marker({
 			position: location,
@@ -19,12 +19,12 @@ script.
 		
 		SpotLocationArr[0] = location.lng();
 		SpotLocationArr[1] = location.lat();
-		$("#formlatlon").val(SpotLocationArr)
+		$('#formlatlon').val(SpotLocationArr)
 
 		SpotLocation.addListener('dragend', function(event) {
 			SpotLocationArr[0] = SpotLocation.getPosition().lng();
 			SpotLocationArr[1] = SpotLocation.getPosition().lat();
-			$("#formlatlon").val(SpotLocationArr)
+			$('#formlatlon').val(SpotLocationArr)
 		});
 		}
 	}
@@ -35,7 +35,7 @@ script.
 
 script.
 	$( document ).ready(function() {		
-		$("#editspotinput").submit(function(event) {
+		$('#editspotinput').submit(function(event) {
 			
 			event.preventDefault();
 

@@ -10,7 +10,7 @@ if username != undefined
 				SpotLocation.setPosition(location);
 				SpotLocationArr[0] = location.lng();
 				SpotLocationArr[1] = location.lat();
-				$("#formlatlon").val(SpotLocationArr)
+				$('#formlatlon').val(SpotLocationArr)
 			} else {
 				SpotLocation = new google.maps.Marker({
 				position: location,
@@ -20,12 +20,12 @@ if username != undefined
 			
 			SpotLocationArr[0] = location.lng();
 			SpotLocationArr[1] = location.lat();
-			$("#formlatlon").val(SpotLocationArr)
+			$('#formlatlon').val(SpotLocationArr)
 
 			SpotLocation.addListener('dragend', function(event) {
 				SpotLocationArr[0] = SpotLocation.getPosition().lng();
 				SpotLocationArr[1] = SpotLocation.getPosition().lat();
-				$("#formlatlon").val(SpotLocationArr)
+				$('#formlatlon').val(SpotLocationArr)
 			});
 			}
 		}
@@ -36,7 +36,7 @@ if username != undefined
 
 	script.
 		$(document).ready(function() {
-			$("#cancelbutton").click(function(){
+			$('#cancelbutton').click(function(){
 				google.maps.event.clearListeners(map, 'click');
 				if(SpotLocation){SpotLocation.setMap(null)}	
 				window.map.data.setMap(map);
@@ -44,7 +44,7 @@ if username != undefined
 				$('#content').html('<p>Welcome to Spotdataba.se, your premier source for blade spots.</p>')
 			})
 
-			$("#setposition").click(function(){
+			$('#setposition').click(function(){
 				navigator.geolocation.getCurrentPosition(function(position) {
 					userposition = new google.maps.LatLng(position.coords.latitude, position.coords.longitude)
 					map.setCenter(userposition)
@@ -52,7 +52,7 @@ if username != undefined
 				})
 			})
 
-			$("#addspotinput").submit(function(event) {
+			$('#addspotinput').submit(function(event) {
 				
 				event.preventDefault();
 

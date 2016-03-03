@@ -16,7 +16,7 @@ script.
 			})
 		})
 
-		$("#logout").click(function(event) {
+		$('#logout').click(function(event) {
 			event.preventDefault();
 			$.post('/logout').done(function() {
 				$('#main').css('width', '40%')
@@ -26,9 +26,9 @@ script.
 			})
 		});
 
-		$("#showeditform").click(function(event) {
+		$('#showeditform').click(function(event) {
 			event.preventDefault();
-			$("#edituserform").show()
+			$('#edituserform').show()
 		});
 	});
 

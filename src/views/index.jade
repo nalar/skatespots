@@ -1,9 +1,9 @@
 doctype html
 html
 	head
-		link(rel='stylesheet' href='/css/style.css')
-		script(src='https://code.jquery.com/jquery-2.2.0.min.js')
-		meta(id='viewport' name="viewport" content="width=device-width, height=device-height, initial-scale=1, maximum-scale=1.0, user-scalable=0")
+		link(rel="stylesheet" href="/css/style.css")
+		script(src="https://code.jquery.com/jquery-2.2.0.min.js")
+		meta(id="viewport" name="viewport" content="width=device-width, height=device-height, initial-scale=1, maximum-scale=1.0, user-scalable=0")
 		link(rel="icon" type="image/png" href="/icons/logo.png" sizes="160x160")
 		title Spotdataba.se
 	body
@@ -55,17 +55,17 @@ html
 								$('#maximalize').toggle();
 							})
 							
-							$("#searchBar").submit(function(event){
+							$('#searchBar').submit(function(event){
 								event.preventDefault();
 							})
 							
-							$("#filtertype").change(function(event){
-								if($("#filtertype").val() == 'all'){
+							$('#filtertype').change(function(event){
+								if($('#filtertype').val() == 'all'){
 									window.map.data.loadGeoJson('/skatespots.json')
 								}else{
 									window.map.data.loadGeoJson('/skatespots.json', null, function(){
 										window.map.data.forEach(function(feature) {
-											if(feature.R.type != $("#filtertype").val()){
+											if(feature.R.type != $('#filtertype').val()){
 												window.map.data.remove(feature)
 											}
 										});
@@ -73,7 +73,7 @@ html
 								}
 							})
 
-							$("#searchTerm").on('keyup',function(event) {
+							$('#searchTerm').on('keyup',function(event) {
 								searched = true;
 								requestTime = event.timeStamp;
 								lastRequestTime = 0;
@@ -82,7 +82,7 @@ html
 									$('#main').css('width', '40%')
 									$('#minimalize').show();
 									$('#maximalize').hide();
-									$("#content").load("/search/?searchTerm="+$("#searchTerm").val())
+									$("#content").load("/search/?searchTerm="+$('#searchTerm').val())
 									$('#content').show()
 								} else{
 									console.log("Not updating, difference under 300ms: " + (requestTime-lastRequestTime) + "ms")
@@ -151,7 +151,7 @@ html
 						});
 						}
 
-					script(async defer src='https://maps.googleapis.com/maps/api/js?key=AIzaSyDmSbvLztiTx63qBwEO3JIzGZWWMmIYTh0&callback=initMap')
+					script(async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDmSbvLztiTx63qBwEO3JIzGZWWMmIYTh0&callback=initMap")
 					
 			#main
 				div(id="minimalize")

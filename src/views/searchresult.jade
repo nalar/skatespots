@@ -1,12 +1,12 @@
 script.
 	$( document ).ready(function() {
-		$(".searchresult").click(function(event){
+		$('.searchresult').click(function(event){
 			event.preventDefault()
 			window.map.data.forEach(function(feature) {
 				window.map.data.remove(feature);
 			});
 			window.map.data.loadGeoJson('/skatespots.json')
-			$("#searchresults").load('/getspotinfo/' + $(this).children("a").attr("id"))
+			$('#searchresults').load('/getspotinfo/' + $(this).children('a').attr('id'))
 		})	
 	})
 

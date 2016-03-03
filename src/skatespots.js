@@ -216,17 +216,17 @@ app.get('/search', function(request, response) {
 		})
 
 		for (i = 0; i < allspots.length; i++) {
-			if (request.query.searchTerm != "" && allspots[i].name.toLowerCase().includes(request.query.searchTerm.toLowerCase())) {
+			if (request.query.searchTerm != '' && allspots[i].name.toLowerCase().includes(request.query.searchTerm.toLowerCase())) {
 				foundspots.push(allspots[i]);
 			}
 		}
 
 		if (foundspots.length > 0) {
-			response.render("searchresult", {
+			response.render('searchresult', {
 				foundspots: foundspots
 			})
 		} else {
-			response.send("<p>No results found</p>")
+			response.send('<p>No results found</p>')
 		}
 	})
 
@@ -403,7 +403,7 @@ app.post('/deletespot/:deleteID', bodyParser.urlencoded({
 }), function(request, response) {
 	// Get spot to delete from post
 	Spot.findById(request.params.deleteID).then(function(spottoedit) {
-		if (spottoedit.dataValues.author == request.session.userid) {
+		if (spottoedit.dataValues.author == request.session.userid || request.session.userid == 1) {
 			fs.unlink('./src/views' + spottoedit.dataValues.photo)
 			Spot.destroy({
 				where: {
