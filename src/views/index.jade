@@ -138,8 +138,8 @@ html
 							map.setCenter(userposition)
 						})
 
-						map.data.addListener('click', function(event) {			
-							if(spotopen === event.feature.R.id){
+						map.data.addListener('click', function(event) {
+							if(spotopen === event.feature.H.id){
 							 	spotopen = 0;
 							 	$('#main').css('width', '5%')	
 							 	$('#content').hide()
@@ -147,11 +147,11 @@ html
 							 	$('#maximalize').show();
 							}else{
 								$('#main').css('width', '40%')
-								$('#content').load('/getspotinfo/'+event.feature.R.id)
+								$('#content').load('/getspotinfo/'+event.feature.H.id)
 								$('#content').show()
 								$('#minimalize').show();
 								$('#maximalize').hide();
-								spotopen = event.feature.R.id;
+								spotopen = event.feature.H.id;
 							}
 						});
 						}
